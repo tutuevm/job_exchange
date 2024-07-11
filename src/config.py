@@ -15,6 +15,7 @@ class Settings(BaseSettings):
 class DataBaseSettings(BaseSettings):
     DATABASE_USER: str = os.environ.get('DATABASE_USER')
     DATABASE_PASSWORD: str = os.environ.get('DATABASE_PASSWORD')
+    DB_NAME: str = os.environ.get('DB_NAME')
     DB_HOST: str = os.environ.get('DB_HOST')
     DB_PORT: str = os.environ.get('DB_PORT')
 
