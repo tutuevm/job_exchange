@@ -7,7 +7,7 @@ from src.database import Base
 
 class ActionType(Base):
 
-    __tablename__ = 'action_type'
+    __tablename__ = 'action_types'
 
     id: Mapped[UUID] = mapped_column(primary_key=True)
     title: Mapped[str] = mapped_column(String(50), nullable=False)
