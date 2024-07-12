@@ -10,7 +10,6 @@ class PlaceService:
         place_dict = place.model_dump()
         async with uow:
             place_id = await uow.place.add_one(place_dict)
-            await uow.commit()
             return place_id
 
     async def get_place_by_id(self, uow: InterfaceUnitOfWork, id: int):

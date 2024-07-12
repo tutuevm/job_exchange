@@ -1,5 +1,5 @@
 from fastapi import APIRouter
-
+from uuid import UUID
 
 from src.schemas.ActionTypeScheme import ActionTypeSchema
 from src.depends import UOWDependence
@@ -21,8 +21,8 @@ async def add_action_type(
 
 @action_type_router.post('/get_place')
 async def get_place(
-        place_id : int,
+        type_id : UUID,
         uow: UOWDependence
 ):
-    place_title = await ActionTypeService().get_type_by_id(uow=uow, id=place_id)
+    place_title = await ActionTypeService().get_type_by_id(uow=uow, type_id=type_id)
     return place_title
