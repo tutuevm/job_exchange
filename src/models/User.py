@@ -1,5 +1,5 @@
 from sqlalchemy.orm import mapped_column, Mapped, relationship
-from sqlalchemy import ForeignKey, String, Table, Column, DateTime
+from sqlalchemy import ForeignKey, String, Table, Column, DateTime, Boolean, LargeBinary
 from sqlalchemy.dialects.postgresql import UUID as alchemy_uuid
 from uuid import UUID
 from typing import List
@@ -25,8 +25,8 @@ class User(Base):
     attributes: Mapped[List["UserAttribute"]] = relationship("UserAttribute", secondary=user_attribute_association, back_populates='user' )
     full_name: Mapped[str] = mapped_column(String(50))
     email: Mapped[str] = mapped_column(String(50))
-    hashed_password: Mapped[str] = mapped_column(String(128))
-    assigned_jobs = relationship("JobResponse", back_populates='user')
+    hashed_password: Mapped[bytes] = mapped_column(LargeBinary)
+    assigned_jobs: Mapped[List["Job"]] = relationship("Job", secondary=user_job_association, back_populates='user')
 
 
 class UserAttribute(Base):
@@ -39,3 +39,14 @@ class UserAttribute(Base):
     user = relationship('User', secondary=user_attribute_association, back_populates='attributes')
 
 
+class Job(Base):
+    __tablename__ = 'jobs'
+    id : Mapped[UUID] = mapped_column(primary_key=True)
+    title : Mapped[str] = mapped_column(String(100))
+    description: Mapped[str] = mapped_column(String(400))
+    period: Mapped[DateTime] = mapped_column(DateTime)
+    action_type: Mapped[UUID] = mapped_column(ForeignKey('action_types.id'))
+    location: Mapped[UUID] = mapped_column(ForeignKey('places.id'))
+    is_active: Mapped[bool] = mapped_column(Boolean)
+
+    responded_users = relationship('User', secondary=user_job_association, back_populates='jobs')

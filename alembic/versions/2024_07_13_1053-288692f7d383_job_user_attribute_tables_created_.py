@@ -1,8 +1,8 @@
-"""Job, User, Attribute tables created; relationship created
+""" Job, User, Attribute tables created; relationship created
 
-Revision ID: 6b5148553e67
+Revision ID: 288692f7d383
 Revises: b48ef407144f
-Create Date: 2024-07-12 16:42:33.211596
+Create Date: 2024-07-13 10:53:20.142419
 
 """
 from typing import Sequence, Union
@@ -12,7 +12,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision: str = '6b5148553e67'
+revision: str = '288692f7d383'
 down_revision: Union[str, None] = 'b48ef407144f'
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
@@ -30,17 +30,16 @@ def upgrade() -> None:
     sa.Column('id', sa.Uuid(), nullable=False),
     sa.Column('full_name', sa.String(length=50), nullable=False),
     sa.Column('email', sa.String(length=50), nullable=False),
-    sa.Column('hashed_password', sa.String(length=128), nullable=False),
+    sa.Column('hashed_password', sa.LargeBinary(), nullable=False),
     sa.PrimaryKeyConstraint('id')
     )
     op.create_table('jobs',
     sa.Column('id', sa.Uuid(), nullable=False),
-    sa.Column('price', sa.Float(), nullable=False),
-    sa.Column('title', sa.String(length=50), nullable=False),
+    sa.Column('title', sa.String(length=100), nullable=False),
     sa.Column('description', sa.String(length=400), nullable=False),
     sa.Column('period', sa.DateTime(), nullable=False),
-    sa.Column('action_type', sa.UUID(), nullable=False),
-    sa.Column('location', sa.UUID(), nullable=False),
+    sa.Column('action_type', sa.Uuid(), nullable=False),
+    sa.Column('location', sa.Uuid(), nullable=False),
     sa.Column('is_active', sa.Boolean(), nullable=False),
     sa.ForeignKeyConstraint(['action_type'], ['action_types.id'], ),
     sa.ForeignKeyConstraint(['location'], ['places.id'], ),
