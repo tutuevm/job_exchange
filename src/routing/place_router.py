@@ -14,7 +14,7 @@ async def add_place(
         place: PlaceSchema,
         uow: UOWDependence
 ):
-    place_id = await add_place(uow=uow, place=place)
+    place_id = await PlaceService().add_place(uow=uow, place=place)
     return {'id': place_id}
 
 @place_router.post('/get_place')

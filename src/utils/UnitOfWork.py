@@ -10,6 +10,8 @@ from src.repositories.UserAttributeRepository import UserAttributeRepository
 class InterfaceUnitOfWork:
         place: Type[PlaceRepository]
         action_type: Type[ActionTypeRepository]
+        user_attr: Type[UserAttributeRepository]
+        user : Type[UserRepository]
         async def __aenter__(self):
             ...
 
