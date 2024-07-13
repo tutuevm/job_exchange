@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
-from typing import List, Any, Sequence
+from typing import List
 
-from sqlalchemy import select, insert, Row, RowMapping
+from sqlalchemy import select, insert, update
 from sqlalchemy.ext.asyncio import AsyncSession
 
 
@@ -27,7 +27,6 @@ class SQLAlchemyRepository(AbstractRepository):
         self.session = session
 
     async def find_by_filter(self, **filter_by) -> List:
-        print(filter_by)
         query = select(self.model).filter_by(**filter_by)
         result = await self.session.execute(query)
         result = [row[0] for row in result.all()]
@@ -39,8 +38,12 @@ class SQLAlchemyRepository(AbstractRepository):
         return result.scalar_one()
 
     async def get_all(self) -> List:
-        print(self.model)
         query = select(self.model)
         result = await self.session.execute(query)
         result = [row[0] for row in result.all()]
         return result
+
+    async def update_cell(self, filter_by: dict, values: dict):
+        stmt = (update(self.model).where(**filter_by).values(**values))
+        await self.session.execute(stmt)
+        return {"status": "OK"}
