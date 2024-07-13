@@ -26,15 +26,15 @@ class User(Base):
     full_name: Mapped[str] = mapped_column(String(50))
     email: Mapped[str] = mapped_column(String(50))
     hashed_password: Mapped[bytes] = mapped_column(LargeBinary)
-    assigned_jobs: Mapped[List["Job"]] = relationship("Job", secondary=user_job_association, back_populates='user')
+    assigned_jobs: Mapped[List["Job"]] = relationship("Job", secondary=user_job_association, back_populates='responded_users')
 
 
 class UserAttribute(Base):
     __tablename__ = 'user_attributes'
 
     id: Mapped[UUID] = mapped_column(primary_key=True)
-    key = Column(String, nullable=False)
-    value = Column(String, nullable=False)
+    key: Mapped[str] = mapped_column(String(50), nullable=False)
+    value : Mapped[str] = mapped_column(String(50), nullable=False)
 
     user = relationship('User', secondary=user_attribute_association, back_populates='attributes')
 
@@ -49,4 +49,4 @@ class Job(Base):
     location: Mapped[UUID] = mapped_column(ForeignKey('places.id'))
     is_active: Mapped[bool] = mapped_column(Boolean)
 
-    responded_users = relationship('User', secondary=user_job_association, back_populates='jobs')
+    responded_users: Mapped[List["User"]] = relationship('User', secondary=user_job_association, back_populates='assigned_jobs')

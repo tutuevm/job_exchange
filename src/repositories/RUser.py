@@ -1,8 +1,8 @@
-from src.utils.repository import AbstractRepository
+from src.utils.repository import SQLAlchemyRepository
+from src.models.User import User
 
 
 
 
-
-class UserRepository(AbstractRepository):
-    model = None
+class UserRepository(SQLAlchemyRepository):
+    model = User

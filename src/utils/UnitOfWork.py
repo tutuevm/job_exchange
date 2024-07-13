@@ -3,6 +3,8 @@ from typing import Type
 from src.database import async_session_maker, test_session_maker
 from src.repositories.RActionType import ActionTypeRepository
 from src.repositories.RPlace import PlaceRepository
+from src.repositories.RUser import UserRepository
+from src.repositories.UserAttributeRepository import UserAttributeRepository
 
 
 class InterfaceUnitOfWork:
@@ -31,6 +33,8 @@ class UnitOfWork:
 
         self.place = PlaceRepository(self.session)
         self.action_type = ActionTypeRepository(self.session)
+        self.user_attr = UserAttributeRepository(self.session)
+        self.user = UserRepository(self.session)
 
     async def __aexit__(self, exc_type, exc_val, exc_tb):
         if exc_type:
@@ -54,6 +58,10 @@ class TestsUnitOfWork:
         self.session = self.session_maker()
 
         self.place = PlaceRepository(self.session)
+        self.action_type = ActionTypeRepository(self.session)
+        self.user_attr = UserAttributeRepository(self.session)
+        self.user = UserRepository(self.session)
+
 
     async def __aexit__(self, exc_type, exc_val, exc_tb):
         if exc_type:
