@@ -25,5 +25,12 @@ async def get_by_id(
         uow: UOWDependence
 ):
     elem = await UserAttributeService().get_attr_by_id(uow=uow, filter_id=attr_id)
-    print(type(elem))
     return elem
+
+
+@user_attribute_router.get('/get_all')
+async def get_place(
+        uow: UOWDependence
+):
+    place_title = await UserAttributeService().get_all_attributes(uow=uow)
+    return place_title

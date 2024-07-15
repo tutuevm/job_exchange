@@ -16,3 +16,8 @@ class UserAttributeService:
         async with uow:
             attr_title = await uow.user_attr.find_by_filter(id=filter_id)
         return attr_title[0]
+
+    async def get_all_attributes(self, uow: InterfaceUnitOfWork):
+        async with uow:
+            result = await uow.user_attr.get_all()
+            return result
