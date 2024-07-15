@@ -6,7 +6,7 @@ from src.config import db_settings
 
 DB_URL = f"postgresql+asyncpg://{db_settings.DB_USER}:{db_settings.DB_PASSWORD}@{db_settings.DB_HOST}:{db_settings.DB_PORT}/{db_settings.DB_NAME}"
 
-async_engine = create_async_engine(DB_URL)
+async_engine = create_async_engine(echo=False, url=DB_URL)
 
 
 async_session_maker = async_sessionmaker(
