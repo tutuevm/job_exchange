@@ -2,6 +2,7 @@ from typing import Type
 
 from src.database import async_session_maker, test_session_maker
 from src.repositories.RActionType import ActionTypeRepository
+from src.repositories.RJob import JobRepository
 from src.repositories.RPlace import PlaceRepository
 from src.repositories.RUser import UserRepository
 from src.repositories.UserAttributeRepository import UserAttributeRepository
@@ -12,6 +13,7 @@ class InterfaceUnitOfWork:
         action_type: Type[ActionTypeRepository]
         user_attr: Type[UserAttributeRepository]
         user : Type[UserRepository]
+        job : Type[JobRepository]
         async def __aenter__(self):
             ...
 
@@ -37,6 +39,7 @@ class UnitOfWork:
         self.action_type = ActionTypeRepository(self.session)
         self.user_attr = UserAttributeRepository(self.session)
         self.user = UserRepository(self.session)
+        self.job = JobRepository(self.session)
 
     async def __aexit__(self, exc_type, exc_val, exc_tb):
         if exc_type:

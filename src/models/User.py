@@ -1,8 +1,9 @@
 from sqlalchemy.orm import mapped_column, Mapped, relationship
-from sqlalchemy import ForeignKey, String, Table, Column, DateTime, Boolean, LargeBinary
+from sqlalchemy import ForeignKey, String, Table, Column, DateTime, Boolean, LargeBinary, func
 from sqlalchemy.dialects.postgresql import UUID as alchemy_uuid
 from uuid import UUID
 from typing import List
+from datetime import datetime
 
 from src.database import Base
 
@@ -44,7 +45,11 @@ class Job(Base):
     id : Mapped[UUID] = mapped_column(primary_key=True)
     title : Mapped[str] = mapped_column(String(100))
     description: Mapped[str] = mapped_column(String(400))
-    period: Mapped[DateTime] = mapped_column(DateTime)
+    created_at: Mapped[datetime] = mapped_column(
+        server_default=func.now(),
+        default=datetime.now(),
+    )
+    finished_at: Mapped[datetime] = mapped_column(DateTime)
     action_type: Mapped[UUID] = mapped_column(ForeignKey('action_types.id'))
     location: Mapped[UUID] = mapped_column(ForeignKey('places.id'))
     is_active: Mapped[bool] = mapped_column(Boolean)
