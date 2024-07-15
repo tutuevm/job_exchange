@@ -1,7 +1,7 @@
 import bcrypt
 
-class UserManager:
 
+class UserManager:
 
     def hash_password(self, password) -> bytes:
         salt = bcrypt.gensalt()
@@ -16,7 +16,6 @@ class UserManager:
 
     def check_jwt(self):
         ...
-
 
 
 hp = UserManager().hash_password('qwerty')

@@ -6,11 +6,11 @@ from src.utils.UnitOfWork import InterfaceUnitOfWork
 
 class PlaceService:
 
-    async def add_place(self, uow: InterfaceUnitOfWork, place: PlaceSchema) -> int:
+    async def add_place(self, uow: InterfaceUnitOfWork, place: PlaceSchema) -> dict:
         place_dict = place.model_dump()
         async with uow:
-            place_id = await uow.place.add_one(place_dict)
-            return place_id
+            status = await uow.place.add_one(place_dict)
+            return status
 
     async def get_place_by_id(self, uow: InterfaceUnitOfWork, id: int):
         async with uow:

@@ -19,6 +19,9 @@ class AbstractRepository(ABC):
     async def get_all(self):
         raise NotImplementedError
 
+    @abstractmethod
+    async def update_cell(self, filter_by: dict, values: dict):
+        raise NotImplementedError
 
 class SQLAlchemyRepository(AbstractRepository):
     model = None
@@ -32,10 +35,10 @@ class SQLAlchemyRepository(AbstractRepository):
         result = [row[0] for row in result.all()]
         return result
 
-    async def add_one(self, data: dict) -> int:
+    async def add_one(self, data: dict) -> dict:
         stmt = insert(self.model).values(**data).returning(self.model.id)
-        result = await self.session.execute(stmt)
-        return result.scalar_one()
+        await self.session.execute(stmt)
+        return {"status": "OK"}
 
     async def get_all(self) -> List:
         query = select(self.model)
@@ -43,7 +46,7 @@ class SQLAlchemyRepository(AbstractRepository):
         result = [row[0] for row in result.all()]
         return result
 
-    async def update_cell(self, filter_by: dict, values: dict):
+    async def update_cell(self, filter_by: dict, values: dict) -> dict:
         stmt = (update(self.model).where(**filter_by).values(**values))
         await self.session.execute(stmt)
         return {"status": "OK"}
