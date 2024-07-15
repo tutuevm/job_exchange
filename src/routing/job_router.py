@@ -1,4 +1,6 @@
 from fastapi import APIRouter
+from typing import List
+
 
 from src.depends import UOWDependence
 from src.schemas.JobSchema import JobSchema
@@ -17,3 +19,9 @@ async def create_job_elem(
 ) -> dict:
     status = await JobService().create_job(uow=uow, job=job)
     return status
+
+
+@job_router.get('/all')
+async def get_jobs(uow : UOWDependence):
+    result = await JobService().get_all_jobs(uow=uow)
+    return result

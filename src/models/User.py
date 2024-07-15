@@ -43,6 +43,7 @@ class UserAttribute(Base):
 class Job(Base):
     __tablename__ = 'jobs'
     id : Mapped[UUID] = mapped_column(primary_key=True)
+    price : Mapped[int]
     title : Mapped[str] = mapped_column(String(100))
     description: Mapped[str] = mapped_column(String(400))
     created_at: Mapped[datetime] = mapped_column(

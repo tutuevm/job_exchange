@@ -19,8 +19,8 @@ async def add_action_type(
     status = await ActionTypeService().add_type(uow=uow, type_schema=type_schema)
     return status
 
-@action_type_router.post('/get_place')
-async def get_place(
+@action_type_router.post('/get_action_type')
+async def get_action_type(
         type_id : UUID,
         uow: UOWDependence
 ):
