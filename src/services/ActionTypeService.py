@@ -6,6 +6,12 @@ from src.utils.UnitOfWork import InterfaceUnitOfWork
 
 
 class ActionTypeService:
+
+    async def get_all_types(self, uow: InterfaceUnitOfWork):
+        async with uow:
+            result = await uow.action_type.get_all()
+            return result
+
     async def add_type(self, uow: InterfaceUnitOfWork, type_schema: ActionTypeSchema) -> dict:
         data = type_schema.model_dump()
         async with uow:

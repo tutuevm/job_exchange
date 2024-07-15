@@ -7,6 +7,12 @@ from src.auth.UserManager import UserManager
 
 class UserService:
 
+    async def get_all_users(self, uow: InterfaceUnitOfWork):
+        '''delete after testing'''
+        async with uow:
+            place_title = await uow.user.get_all()
+            return place_title
+
     async def register_user(self, uow:InterfaceUnitOfWork, user: UserSchema) -> dict:
         user_data = user.model_dump()
         async with uow:

@@ -11,6 +11,15 @@ action_type_router = APIRouter(
 )
 
 
+
+@action_type_router.get('/get_all')
+async def get_place(
+        uow: UOWDependence
+):
+    place_title = await ActionTypeService().get_all_types(uow=uow)
+    return place_title
+
+
 @action_type_router.post("/add_action_type")
 async def add_action_type(
         type_schema: ActionTypeSchema,

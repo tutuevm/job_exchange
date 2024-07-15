@@ -11,6 +11,14 @@ user_router = APIRouter(
     tags = ['user manager']
 )
 
+@user_router.get('/get_all')
+async def get_all_users(
+        uow: UOWDependence
+):
+    place_title = await UserService().get_all_users(uow=uow)
+    return place_title
+
+
 @user_router.post('/register_user')
 async def reg_user(uow:UOWDependence, user: UserSchema) -> dict:
     status = await UserService().register_user(uow=uow, user=user)

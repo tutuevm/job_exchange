@@ -29,8 +29,9 @@ async def get_by_id(
 
 
 @user_attribute_router.get('/get_all')
-async def get_place(
+async def get_all_attributes(
         uow: UOWDependence
 ):
     place_title = await UserAttributeService().get_all_attributes(uow=uow)
     return place_title
+
