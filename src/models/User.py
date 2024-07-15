@@ -4,19 +4,20 @@ from sqlalchemy.dialects.postgresql import UUID as alchemy_uuid
 from uuid import UUID
 from typing import List
 from datetime import datetime
+from uuid import uuid4
 
 from src.database import Base
 
 user_attribute_association = Table(
     'user_attribute_association', Base.metadata,
-    Column('user_id', alchemy_uuid, ForeignKey('users.id')),
-    Column('attribute_id', alchemy_uuid, ForeignKey('user_attributes.id'))
+    Column('user_id', alchemy_uuid, ForeignKey('users.id'), primary_key=True),
+    Column('attribute_id', alchemy_uuid, ForeignKey('user_attributes.id'), primary_key=True),
 )
 
 user_job_association = Table(
     'user_job_association', Base.metadata,
-    Column('user_id', alchemy_uuid, ForeignKey('users.id')),
-          Column('job_id', alchemy_uuid, ForeignKey('jobs.id'))
+    Column('user_id', alchemy_uuid, ForeignKey('users.id'), primary_key=True),
+          Column('job_id', alchemy_uuid, ForeignKey('jobs.id'), primary_key=True),
 )
 
 class User(Base):

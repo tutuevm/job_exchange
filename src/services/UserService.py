@@ -17,6 +17,10 @@ class UserService:
     async def append_user_attribute(self, uow:InterfaceUnitOfWork, user_id: UUID, attr_id: UUID) -> dict:
         async with uow:
             result = await uow.user.append_many_to_many_elem(user_id=user_id, elem_model=UserAttribute, elem_id=attr_id, row_name="attributes")
+
+        if 'warning' in result:
+            return result
+
         return {
             "user" : result.full_name,
             "attributes" : result.attributes,
@@ -26,6 +30,9 @@ class UserService:
     async def assign_with_job(self, uow: InterfaceUnitOfWork, user_id: UUID, job_id: UUID):
         async with uow:
             result = await uow.user.append_many_to_many_elem(user_id=user_id, elem_model=Job, elem_id=job_id, row_name="assigned_jobs")
+
+        if 'warning' in result:
+            return result
         return {
             "user" : result.full_name,
             "job" : result.assigned_jobs,
