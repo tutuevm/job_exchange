@@ -17,6 +17,3 @@ class UserManager:
     def check_jwt(self):
         ...
 
-
-hp = UserManager().hash_password('qwerty')
-print(type(hp))
