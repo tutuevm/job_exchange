@@ -6,6 +6,6 @@ class UserSchema(BaseModel):
     id : UUID = Field(default_factory=uuid4)
     full_name: str = Field(max_length=50)
     email: EmailStr = Field(max_length=50)
-    password: str
+    hashed_password: str
 
 
