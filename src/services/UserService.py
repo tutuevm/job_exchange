@@ -3,7 +3,7 @@ from uuid import UUID
 from src.models.User import UserAttribute, Job, User
 from src.schemas.UserSchema import UserSchema
 from src.utils.UnitOfWork import InterfaceUnitOfWork
-from src.auth.UserManager import UserManager
+from src.utils.UserManager import UserManager
 
 class UserService:
 

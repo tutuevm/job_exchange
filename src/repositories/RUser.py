@@ -19,11 +19,13 @@ class UserRepository(SQLAlchemyRepository):
         user_relationship.append(elem)
         return user
 
-    # async def remove_many_to_many_elem(self, user_id, elem_model, elem_id) -> User:
-    #     user = await self.session.scalar(
-    #         select(self.model).filter_by(id=user_id).options(selectinload(self.model.attributes)))
-    #     elem = await self.session.scalar(select(elem_model).filter_by(id=elem_id))
-    #     if elem in user.attributes:
-    #         user.attributes.remove(elem)
-    #
-    #     return user
+    async def remove_many_to_many_elem(self, user_id, elem_model, elem_id, row_name) -> dict:
+        user = await self.session.scalar(
+            select(self.model).filter_by(id=user_id).options(selectinload(getattr(User, row_name))))
+        elem = await self.session.scalar(select(elem_model).filter_by(id=elem_id))
+        if elem in user.attributes:
+            user.attributes.remove(elem)
+            return {'status':'OK'}
+        return {
+            'warning' : 'relation does not exist'
+        }
