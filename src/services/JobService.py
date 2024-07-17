@@ -2,6 +2,7 @@ from typing import List
 
 from src.schemas.JobSchema import JobSchema
 from src.utils.UnitOfWork import InterfaceUnitOfWork
+from uuid import UUID
 
 class JobService:
 
@@ -15,3 +16,9 @@ class JobService:
         async with uow:
             jobs = await uow.job.get_all()
         return jobs
+
+
+    async  def delete_job_by_id(self, uow: InterfaceUnitOfWork, id: UUID):
+        async with uow:
+            status = await uow.job.delete_one(id=id)
+        return status

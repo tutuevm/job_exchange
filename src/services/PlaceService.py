@@ -1,4 +1,4 @@
-from typing import List
+from uuid import UUID
 
 from src.schemas.PlaceSchema import PlaceSchema
 from src.utils.UnitOfWork import InterfaceUnitOfWork
@@ -12,7 +12,7 @@ class PlaceService:
             status = await uow.place.add_one(place_dict)
             return status
 
-    async def get_place_by_id(self, uow: InterfaceUnitOfWork, id: int):
+    async def get_place_by_id(self, uow: InterfaceUnitOfWork, id: UUID):
         async with uow:
             place_title = await uow.place.find_by_filter(id=id)
             return place_title
