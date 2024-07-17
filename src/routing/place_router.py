@@ -18,7 +18,7 @@ async def add_place(
     return status
 
 @place_router.post('/get_place')
-async def get_place(
+async def get_place_by_id(
         place_id : int,
         uow: UOWDependence
 ):
@@ -26,7 +26,7 @@ async def get_place(
     return place_title
 
 @place_router.get('/get_all')
-async def get_place(
+async def get_all_places(
         uow: UOWDependence
 ):
     place_title = await PlaceService().get_all(uow=uow)
