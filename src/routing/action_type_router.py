@@ -29,7 +29,7 @@ async def add_action_type(
     return status
 
 @action_type_router.post('/get_action_type')
-async def get_action_type(
+async def get_action_type_by_id(
         type_id : UUID,
         uow: UOWDependence
 ):
