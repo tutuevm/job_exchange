@@ -2,6 +2,7 @@ from abc import ABC, abstractmethod
 from typing import List
 
 from sqlalchemy import select, insert, update, delete
+from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 
 
@@ -52,6 +53,9 @@ class SQLAlchemyRepository(AbstractRepository):
         return {"status": "OK"}
 
     async def delete_one(self, **filter_by):
+        elem = await self.session.scalar(select(self.model).filter_by(**filter_by))
+        if not elem:
+            return {'status': 'failed', 'error': f'no elements with {filter_by} were found'}
         stmt = delete(self.model).filter_by(**filter_by)
         await self.session.execute(stmt)
-        return {"status": "OK"}
+        return {'status': f'elem with {filter_by} deleted'}

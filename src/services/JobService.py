@@ -3,6 +3,8 @@ from typing import List
 from src.schemas.JobSchema import JobSchema
 from src.utils.UnitOfWork import InterfaceUnitOfWork
 from uuid import UUID
+from sqlalchemy.exc import IntegrityError
+
 
 class JobService:
 
@@ -17,8 +19,12 @@ class JobService:
             jobs = await uow.job.get_all()
         return jobs
 
-
-    async  def delete_job_by_id(self, uow: InterfaceUnitOfWork, id: UUID):
+    async def delete_job_by_id(self, uow: InterfaceUnitOfWork, id: UUID):
         async with uow:
-            await uow.job.delete_one(id=id)
-        return {'status': f'job with id {id} deleted'}
+            try:
+                status = await uow.job.delete_one(id=id)
+                return status
+            except IntegrityError:
+                return {'status': 'failed',
+                        'error': f'There are still references to id={id} in other database tables'}
+
