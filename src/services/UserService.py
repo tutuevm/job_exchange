@@ -39,3 +39,8 @@ class UserService:
         if 'warning' in result:
             return result
         return result
+
+    async def unassign_with_job(self, uow: InterfaceUnitOfWork, user_id: UUID, job_id: UUID) -> dict:
+        async with uow:
+            result = await uow.user.remove_many_to_many_elem(user_id=user_id, elem_model=Job, elem_id=job_id, row_name="assigned_jobs")
+            return result
