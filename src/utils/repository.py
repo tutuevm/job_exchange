@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 from typing import List
 
-from sqlalchemy import select, insert, update
+from sqlalchemy import select, insert, update, delete
 from sqlalchemy.ext.asyncio import AsyncSession
 
 
@@ -48,5 +48,10 @@ class SQLAlchemyRepository(AbstractRepository):
 
     async def update_cell(self, filter_by: dict, values: dict) -> dict:
         stmt = (update(self.model).where(**filter_by).values(**values))
+        await self.session.execute(stmt)
+        return {"status": "OK"}
+
+    async def delete_one(self, **filter_by):
+        stmt = delete(self.model).where(**filter_by)
         await self.session.execute(stmt)
         return {"status": "OK"}
