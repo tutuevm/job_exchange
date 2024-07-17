@@ -1,5 +1,5 @@
 from fastapi import APIRouter
-from typing import List
+from uuid import UUID
 
 
 from src.depends import UOWDependence
@@ -24,4 +24,13 @@ async def create_job_elem(
 @job_router.get('/all')
 async def get_jobs(uow : UOWDependence):
     result = await JobService().get_all_jobs(uow=uow)
+    return result
+
+
+@job_router.delete('/remove_job')
+async def remove_job_by_id(
+        uow: UOWDependence,
+        job_id : UUID
+) -> dict:
+    result = await JobService().delete_job_by_id(uow=uow,id=job_id)
     return result

@@ -52,6 +52,6 @@ class SQLAlchemyRepository(AbstractRepository):
         return {"status": "OK"}
 
     async def delete_one(self, **filter_by):
-        stmt = delete(self.model).where(**filter_by)
+        stmt = delete(self.model).filter_by(**filter_by)
         await self.session.execute(stmt)
         return {"status": "OK"}

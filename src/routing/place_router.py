@@ -1,5 +1,5 @@
 from fastapi import APIRouter
-
+from uuid import UUID
 from src.depends import UOWDependence
 from src.schemas.PlaceSchema import PlaceSchema
 from src.services.PlaceService import PlaceService
@@ -19,7 +19,7 @@ async def add_place(
 
 @place_router.post('/get_place')
 async def get_place_by_id(
-        place_id : int,
+        place_id : UUID,
         uow: UOWDependence
 ):
     place_title = await PlaceService().get_place_by_id(uow=uow, id=place_id)

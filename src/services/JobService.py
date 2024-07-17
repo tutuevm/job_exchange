@@ -20,5 +20,5 @@ class JobService:
 
     async  def delete_job_by_id(self, uow: InterfaceUnitOfWork, id: UUID):
         async with uow:
-            status = await uow.job.delete_one(id=id)
-        return status
+            await uow.job.delete_one(id=id)
+        return {'status': f'job with id {id} deleted'}
