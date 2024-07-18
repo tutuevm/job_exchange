@@ -51,9 +51,10 @@ class Job(Base):
         server_default=func.now(),
         default=datetime.now(),
     )
+    started_at: Mapped[datetime] = mapped_column(DateTime)
     finished_at: Mapped[datetime] = mapped_column(DateTime)
     action_type: Mapped[UUID] = mapped_column(ForeignKey('action_types.id'))
     location: Mapped[UUID] = mapped_column(ForeignKey('places.id'))
     is_active: Mapped[bool] = mapped_column(Boolean)
-
+    job_provider: Mapped[UUID] = mapped_column(ForeignKey('places.id'))
     responded_users: Mapped[List["User"]] = relationship('User', secondary=user_job_association, back_populates='assigned_jobs')

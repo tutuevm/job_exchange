@@ -33,3 +33,8 @@ async def append_user_attr(uow:UOWDependence,user_id: UUID, attr_id: UUID):
 async def assign_with_job(uow:UOWDependence,user_id: UUID, job_id: UUID):
     result = await UserService().assign_with_job(uow=uow, user_id=user_id,job_id=job_id)
     return result
+
+@user_router.delete('/remove_all_jobs')
+async def remove_all_jobs(uow:UOWDependence,user_id: UUID):
+    result = await UserService().remove_all_jobs(uow=uow, user_id=user_id)
+    return result
