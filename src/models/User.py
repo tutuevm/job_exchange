@@ -56,5 +56,5 @@ class Job(Base):
     action_type: Mapped[UUID] = mapped_column(ForeignKey('action_types.id'))
     location: Mapped[UUID] = mapped_column(ForeignKey('places.id'))
     is_active: Mapped[bool] = mapped_column(Boolean)
-    job_provider: Mapped[UUID] = mapped_column(ForeignKey('job_providers.id'))
+    organization_id: Mapped[UUID] = mapped_column(ForeignKey('organizations.id'))
     responded_users: Mapped[List["User"]] = relationship('User', secondary=user_job_association, back_populates='assigned_jobs')

@@ -12,8 +12,7 @@ sys.path.append(os.path.join(sys.path[0], 'src'))
 import src.config
 from src.models.Place import *
 from src.models.ActionType import *
-from src.models.Job import *
-from src.models.JobProvider import *
+from src.models.Organization import *
 from src.models.User import *
 from src.config import settings
 # this is the Alembic Config object, which provides

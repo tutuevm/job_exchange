@@ -6,6 +6,7 @@ from src.repositories.RJob import JobRepository
 from src.repositories.RPlace import PlaceRepository
 from src.repositories.RUser import UserRepository
 from src.repositories.UserAttributeRepository import UserAttributeRepository
+from src.repositories.ROrganization import OrganizationRepository
 
 
 class InterfaceUnitOfWork:
@@ -14,6 +15,7 @@ class InterfaceUnitOfWork:
         user_attr: Type[UserAttributeRepository]
         user : Type[UserRepository]
         job : Type[JobRepository]
+        org : Type[OrganizationRepository]
         async def __aenter__(self):
             ...
 
@@ -40,6 +42,7 @@ class UnitOfWork:
         self.user_attr = UserAttributeRepository(self.session)
         self.user = UserRepository(self.session)
         self.job = JobRepository(self.session)
+        self.org = OrganizationRepository(self.session)
 
     async def __aexit__(self, exc_type, exc_val, exc_tb):
         if exc_type:

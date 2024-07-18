@@ -13,4 +13,4 @@ class JobSchema(BaseModel):
     action_type: UUID
     location: UUID
     is_active: bool = Field(default=True)
-    job_provider : UUID
+    organization_id : UUID

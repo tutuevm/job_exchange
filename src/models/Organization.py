@@ -5,8 +5,8 @@ from uuid import UUID
 from src.database import Base
 
 
-class JobProvider(Base):
-    __tablename__ = 'job_providers'
+class Organization(Base):
+    __tablename__ = 'organizations'
 
     id: Mapped[UUID] = mapped_column(primary_key=True)
     title: Mapped[str] = mapped_column(String(100))
