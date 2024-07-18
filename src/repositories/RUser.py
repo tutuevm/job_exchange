@@ -19,8 +19,8 @@ class UserRepository(SQLAlchemyRepository):
         user_relationship.append(elem)
         return {
             "user" : user.full_name,
-            "job" : user.assigned_jobs,
-            "status" : 'the user is assigned a job'
+            "job" : user_relationship,
+            "status" : 'relationship successfully create'
         }
 
     async def remove_many_to_many_elem(self, user_id, elem_model, elem_id, row_name) -> dict:

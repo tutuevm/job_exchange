@@ -34,3 +34,11 @@ async def remove_job_by_id(
 ) -> dict:
     result = await JobService().delete_job_by_id(uow=uow,id=job_id)
     return result
+
+@job_router.post('/get_job_relationship')
+async def get_job_relationship(
+        uow: UOWDependence,
+        job_id : UUID
+):
+    result = await JobService().get_all_responded_users(uow=uow, job_id=job_id)
+    return result
