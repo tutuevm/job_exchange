@@ -8,7 +8,9 @@ class JobSchema(BaseModel):
     title : str = Field(max_length=100)
     price : int
     description: str = Field(max_length=400)
+    started_at: datetime = Field(default=datetime.now())
     finished_at: datetime = Field(default=datetime.now() + timedelta(days=1))
     action_type: UUID
     location: UUID
     is_active: bool = Field(default=True)
+    job_provider : UUID
