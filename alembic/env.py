@@ -13,18 +13,19 @@ import src.config
 from src.models.Place import *
 from src.models.ActionType import *
 from src.models.Job import *
+from src.models.JobProvider import *
 from src.models.User import *
-from src.config import db_settings
+from src.config import settings
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
 config = context.config
 
 section = config.config_ini_section
-config.set_section_option(section, "DB_HOST", db_settings.DB_HOST)
-config.set_section_option(section, "DB_NAME", db_settings.DB_NAME)
-config.set_section_option(section, "DB_PASS", db_settings.DB_PASSWORD)
-config.set_section_option(section, "DB_PORT", db_settings.DB_PORT)
-config.set_section_option(section, "DB_USER", db_settings.DB_USER)
+config.set_section_option(section, "DB_HOST", settings.DB_SETTINGS.DB_HOST)
+config.set_section_option(section, "DB_NAME", settings.DB_SETTINGS.DB_NAME)
+config.set_section_option(section, "DB_PASS", settings.DB_SETTINGS.DB_PASSWORD)
+config.set_section_option(section, "DB_PORT", settings.DB_SETTINGS.DB_PORT)
+config.set_section_option(section, "DB_USER", settings.DB_SETTINGS.DB_USER)
 
 
 # Interpret the config file for Python logging.
