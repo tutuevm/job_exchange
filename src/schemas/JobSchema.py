@@ -13,4 +13,5 @@ class JobSchema(BaseModel):
     action_type: UUID
     location: UUID
     is_active: bool = Field(default=True)
+    job_address: str = Field(max_length=200)
     organization_id : UUID

@@ -29,6 +29,7 @@ class User(Base):
     email: Mapped[str] = mapped_column(String(50))
     hashed_password: Mapped[bytes] = mapped_column(LargeBinary)
     assigned_jobs: Mapped[List["Job"]] = relationship("Job", secondary=user_job_association, back_populates='responded_users')
+    is_active : Mapped[bool] = mapped_column(default=True)
 
 
 class UserAttribute(Base):
@@ -57,4 +58,5 @@ class Job(Base):
     location: Mapped[UUID] = mapped_column(ForeignKey('places.id'))
     is_active: Mapped[bool] = mapped_column(Boolean)
     organization_id: Mapped[UUID] = mapped_column(ForeignKey('organizations.id'))
+    job_address: Mapped[str] = mapped_column(String(200))
     responded_users: Mapped[List["User"]] = relationship('User', secondary=user_job_association, back_populates='assigned_jobs')
