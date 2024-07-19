@@ -44,3 +44,6 @@ class UserRepository(SQLAlchemyRepository):
             print(elem)
             user_relationship.remove(elem)
         return {'status': 'OK'}
+
+
+    async def

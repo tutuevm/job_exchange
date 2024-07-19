@@ -26,9 +26,11 @@ class User(Base):
     id: Mapped[UUID] = mapped_column(primary_key=True)
     attributes: Mapped[List["UserAttribute"]] = relationship("UserAttribute", secondary=user_attribute_association, back_populates='user' )
     full_name: Mapped[str] = mapped_column(String(50))
-    email: Mapped[str] = mapped_column(String(50))
+    login: Mapped[str] = mapped_column(String(50), unique=True, index=True)
+    email: Mapped[str] = mapped_column(String(50), unique=True, index=True)
     hashed_password: Mapped[bytes] = mapped_column(LargeBinary)
     assigned_jobs: Mapped[List["Job"]] = relationship("Job", secondary=user_job_association, back_populates='responded_users')
+    notifications: Mapped[List["UserAttribute"]] = relationship(back_populates="user_id")
     is_active : Mapped[bool] = mapped_column(default=True)
 
 

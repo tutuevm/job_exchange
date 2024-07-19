@@ -14,6 +14,7 @@ from src.models.Place import *
 from src.models.ActionType import *
 from src.models.Organization import *
 from src.models.User import *
+from src.models.Notifications import Notification
 from src.config import settings
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
