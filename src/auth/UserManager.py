@@ -11,7 +11,7 @@ class UserManager:
         pwd_bytes: bytes = password.encode()
         return bcrypt.hashpw(pwd_bytes, salt)
 
-    def validate_password(self, password, hashed_password) -> bool:
+    def validate_password(self, password:str, hashed_password:bytes) -> bool:
         return bcrypt.checkpw(password.encode(), hashed_password)
 
     def return_jwt(

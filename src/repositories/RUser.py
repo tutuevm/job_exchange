@@ -1,4 +1,4 @@
-from sqlalchemy import select
+from sqlalchemy import select, or_
 from sqlalchemy.orm import selectinload
 from uuid import UUID
 
@@ -35,3 +35,9 @@ class UserRepository(SQLAlchemyRepository):
             }
         user_relationship.remove(elem)
         return {'status': 'OK'}
+
+    async def get_users_by_different_fields(self, *filter_by):
+        query = select(self.model).where(or_(*filter_by))
+        result = await self.session.execute(query)
+        result = [row[0] for row in result.all()]
+        return result

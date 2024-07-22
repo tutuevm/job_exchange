@@ -3,7 +3,7 @@ from uuid import UUID
 
 from src.schemas.UserSchema import UserSchema
 from src.depends import UOWDependence
-from src.auth.UserService import UserService
+from src.services.UserService import UserService
 
 
 user_router = APIRouter(
