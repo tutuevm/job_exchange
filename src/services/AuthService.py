@@ -1,4 +1,4 @@
-from src.schemas.UserLoginShema import UserLoginSchema
+from src.auth.UserLoginShema import UserLoginSchema
 
 
 class AuthService:

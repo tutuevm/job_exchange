@@ -3,7 +3,7 @@ from uuid import UUID
 
 from src.schemas.UserSchema import UserSchema
 from src.depends import UOWDependence
-from src.services.UserService import UserService
+from src.auth.UserService import UserService
 
 
 user_router = APIRouter(
@@ -34,7 +34,19 @@ async def assign_with_job(uow:UOWDependence,user_id: UUID, job_id: UUID):
     result = await UserService().assign_with_job(uow=uow, user_id=user_id,job_id=job_id)
     return result
 
-@user_router.delete('/remove_all_jobs')
-async def remove_all_jobs(uow:UOWDependence,user_id: UUID):
-    result = await UserService().remove_all_jobs(uow=uow, user_id=user_id)
+@user_router.delete('/remove_attribute')
+async def unassign_with_job(
+        uow:UOWDependence,
+        user_id: UUID,
+        attr_id: UUID
+):
+    result = await UserService().unassign_with_attribute(uow=uow, user_id=user_id, attr_id=attr_id)
+    return result
+
+@user_router.delete('/remove_user')
+async def remove_user(
+        uow:UOWDependence,
+        user_id: UUID
+):
+    result = await UserService().remove_user(uow=uow, user_id=user_id)
     return result

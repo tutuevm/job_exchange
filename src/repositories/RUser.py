@@ -35,15 +35,3 @@ class UserRepository(SQLAlchemyRepository):
             }
         user_relationship.remove(elem)
         return {'status': 'OK'}
-
-    async def remove_all_relationship(self, user_id: UUID, row_name: str):
-        user = await self.session.scalar(
-            select(self.model).filter_by(id=user_id).options(selectinload(getattr(User, row_name))))
-        user_relationship = getattr(user, row_name)
-        for elem in user_relationship:
-            print(elem)
-            user_relationship.remove(elem)
-        return {'status': 'OK'}
-
-
-    async def
