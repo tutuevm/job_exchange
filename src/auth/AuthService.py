@@ -1,6 +1,7 @@
 from datetime import datetime, UTC, timedelta
 
 from fastapi import HTTPException
+from jwt import ExpiredSignatureError
 
 from src.auth.UserLoginShema import UserLoginSchema, TokenInfo
 from src.utils.UnitOfWork import InterfaceUnitOfWork
@@ -35,5 +36,8 @@ class AuthService:
 
 
 
-    async def validate_user(self, username: str, password: str):
-        ...
+    def validate_jwt(self, jwt: str):
+        try:
+            return UserManager().check_jwt(token=jwt)
+        except ExpiredSignatureError:
+            raise HTTPException(status_code=401, detail={'warning': 'ExpiredSignatureError'})

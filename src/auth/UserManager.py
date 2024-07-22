@@ -24,7 +24,7 @@ class UserManager:
 
     def check_jwt(
             self,
-            token: str | bytes,
+            token: str,
             public_key=settings.SSL_Settings.public_jwt_key.read_text(),
             algorithm=settings.AUTH_SETTINGS.algorithm
     ):

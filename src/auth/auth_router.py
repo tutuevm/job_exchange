@@ -20,3 +20,12 @@ async def auth_user_issue_jwt(
         return result
     except HTTPException as e:
         return JSONResponse(status_code=e.status_code, content=e.detail)
+
+@auth_router.post('/check_jwt')
+def check_jwt(
+        jwt: str
+):
+    try:
+        return AuthService().validate_jwt(jwt)
+    except HTTPException as e:
+        return JSONResponse(status_code=e.status_code, content=e.detail)
