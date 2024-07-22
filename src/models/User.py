@@ -2,11 +2,14 @@ from sqlalchemy.orm import mapped_column, Mapped, relationship
 from sqlalchemy import ForeignKey, String, Table, Column, DateTime, Boolean, LargeBinary, func
 from sqlalchemy.dialects.postgresql import UUID as alchemy_uuid
 from uuid import UUID
-from typing import List
+from typing import List, TYPE_CHECKING
 from datetime import datetime
-from uuid import uuid4
+
+if TYPE_CHECKING:
+    from src.models.Notifications import Notification
 
 from src.database import Base
+
 
 user_attribute_association = Table(
     'user_attribute_association', Base.metadata,
@@ -30,7 +33,7 @@ class User(Base):
     email: Mapped[str] = mapped_column(String(50), unique=True, index=True)
     hashed_password: Mapped[bytes] = mapped_column(LargeBinary)
     assigned_jobs: Mapped[List["Job"]] = relationship("Job", secondary=user_job_association, back_populates='responded_users')
-    notifications: Mapped[List["UserAttribute"]] = relationship(back_populates="user_id")
+    notifications: Mapped[List["Notification"]] = relationship(back_populates="user")
     is_active : Mapped[bool] = mapped_column(default=True)
 
 
