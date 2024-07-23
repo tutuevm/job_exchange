@@ -1,5 +1,6 @@
 from typing import Type
 
+
 from src.database import async_session_maker, test_session_maker
 from src.repositories.RActionType import ActionTypeRepository
 from src.repositories.RJob import JobRepository

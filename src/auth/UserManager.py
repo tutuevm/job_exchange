@@ -1,10 +1,31 @@
 import bcrypt
 import jwt
+from abc import ABC, abstractmethod
+from typing import Dict
 
 from src.config import settings
 
 
-class UserManager:
+class IUserManager(ABC):
+
+    @abstractmethod
+    def hash_password(self, password: str) -> bytes:
+        raise NotImplementedError
+
+    @abstractmethod
+    def validate_password(self, password: str, hashed_password: bytes) -> bool:
+        raise NotImplementedError
+
+    @abstractmethod
+    def return_jwt(self, payload: Dict, key: str, algorithm: str) -> str:
+        raise NotImplementedError
+
+    @abstractmethod
+    def check_jwt(self, token: str, public_key: str, algorithm: str) -> Dict:
+        raise NotImplementedError
+
+
+class UserManager(IUserManager):
 
     def hash_password(self, password) -> bytes:
         salt = bcrypt.gensalt()

@@ -6,25 +6,29 @@ from jwt import ExpiredSignatureError
 from src.auth.UserLoginShema import UserLoginSchema, TokenInfo
 from src.utils.UnitOfWork import InterfaceUnitOfWork
 from src.models.User import User
-from src.auth.UserManager import UserManager
+from src.auth.UserManager import IUserManager
 from src.config import settings
+
+
 class AuthService:
 
-    async def auth_user_issue_jwt(self, uow: InterfaceUnitOfWork, user: UserLoginSchema):
+    async def auth_user_issue_jwt(self, uow: InterfaceUnitOfWork, manager: IUserManager, user: UserLoginSchema):
         user_login_data = user.model_dump()
         async with uow:
-            user = await uow.user.get_users_by_different_fields(User.login ==user_login_data['username'],User.email==user_login_data['username'])
+            user = await uow.user.get_users_by_different_fields(User.login == user_login_data['username'],
+                                                                User.email == user_login_data['username'])
         if len(user) > 1:
-            raise HTTPException(status_code=401, detail={"warning": "more than one user with the entered parameters was found"})
+            raise HTTPException(status_code=401,
+                                detail={"warning": "more than one user with the entered parameters was found"})
 
         if len(user) == 0:
             raise HTTPException(status_code=401, detail={"warning": "no users were found"})
 
-        if not UserManager().validate_password(password=user_login_data['password'], hashed_password=user[0].hashed_password):
+        if not manager.validate_password(password=user_login_data['password'], hashed_password=user[0].hashed_password):
             raise HTTPException(status_code=401, detail={"warning": "wrong login or password"})
 
         return TokenInfo(
-            access_token=UserManager().return_jwt(
+            access_token=manager.return_jwt(
                 payload={
                     "sub": user[0].email,
                     "exp": datetime.now(UTC) + timedelta(minutes=settings.AUTH_SETTINGS.access_token_expire_minutes),
@@ -33,11 +37,8 @@ class AuthService:
             token_type="Bearer"
         )
 
-
-
-
-    def validate_jwt(self, jwt: str):
+    def validate_jwt(self, manager: IUserManager, jwt: str):
         try:
-            return UserManager().check_jwt(token=jwt)
+            return manager.check_jwt(token=jwt)
         except ExpiredSignatureError:
             raise HTTPException(status_code=401, detail={'warning': 'ExpiredSignatureError'})
