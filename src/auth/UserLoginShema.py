@@ -1,5 +1,5 @@
 from pydantic import BaseModel, EmailStr
-
+from uuid import UUID
 
 class UserLoginSchema(BaseModel):
     username : EmailStr | str
@@ -8,3 +8,4 @@ class UserLoginSchema(BaseModel):
 class TokenInfo(BaseModel):
     access_token: str
     token_type: str
+    user : UUID

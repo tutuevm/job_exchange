@@ -9,4 +9,9 @@ class UserSchema(BaseModel):
     email: EmailStr = Field(max_length=50)
     hashed_password: str
 
-
+class UserInfo(BaseModel):
+    id: UUID
+    full_name: str
+    login: str
+    email: str
+    is_active: bool

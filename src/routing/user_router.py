@@ -1,7 +1,7 @@
 from fastapi import APIRouter
 from uuid import UUID
 
-from src.schemas.UserSchema import UserSchema
+from src.schemas.UserSchema import UserSchema, UserInfo
 from src.depends import UOWDependence
 from src.services.UserService import UserService
 
@@ -17,6 +17,14 @@ async def get_all_users(
 ):
     place_title = await UserService().get_all_users(uow=uow)
     return place_title
+
+@user_router.post('/get_user_by_id', response_model=UserInfo)
+async def get_user_by_id(
+        uow:UOWDependence,
+        user_id:UUID
+):
+    result = await UserService().get_user_by_id(uow=uow, user_id=user_id)
+    return result
 
 
 @user_router.post('/register_user')

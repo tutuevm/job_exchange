@@ -19,3 +19,9 @@ class JobSchema(BaseModel):
     organization_id : UUID
 
 
+class JobStatus(Enum):
+    DRAFT = 'Черновик'
+    CREATED = 'Создана'
+    UNDER_REVIEW = 'На проверке'
+    COMPLETED = 'Выполнена'
+    CLOSED = 'Закрыта'

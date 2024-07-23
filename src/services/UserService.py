@@ -1,7 +1,7 @@
 from uuid import UUID
 
 from src.models.User import UserAttribute, Job
-from src.schemas.UserSchema import UserSchema
+from src.schemas.UserSchema import UserSchema, UserInfo
 from src.utils.UnitOfWork import InterfaceUnitOfWork
 from src.auth.UserManager import UserManager
 
@@ -54,3 +54,14 @@ class UserService:
         async with uow:
             result = await uow.user.delete_one(id=user_id)
         return result
+
+    async def get_user_by_id(self, uow:InterfaceUnitOfWork, user_id:UUID):
+        async with uow:
+            result = await uow.user.find_by_filter(id=user_id)
+        return UserInfo(
+            id= result[0].id,
+            full_name= result[0].full_name,
+            login= result[0].login,
+            email= result[0].email,
+            is_active= result[0].is_active
+        )

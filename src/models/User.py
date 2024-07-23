@@ -5,6 +5,8 @@ from uuid import UUID
 from typing import List, TYPE_CHECKING
 from datetime import datetime
 
+from src.schemas.JobSchema import JobStatus
+
 if TYPE_CHECKING:
     from src.models.Notifications import Notification
 
@@ -53,7 +55,7 @@ class UserAttribute(Base):
 class Job(Base):
     __tablename__ = 'jobs'
     id : Mapped[UUID] = mapped_column(primary_key=True)
-    status: Mapped[str] = mapped_column(String(50), index=True)
+    status: Mapped[str] = mapped_column(String(50), default=JobStatus.CREATED.value, index=True)
     price : Mapped[int]
     title : Mapped[str] = mapped_column(String(100))
     description: Mapped[str] = mapped_column(String(400))

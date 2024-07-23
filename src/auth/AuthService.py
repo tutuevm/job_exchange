@@ -34,7 +34,8 @@ class AuthService:
                     "exp": datetime.now(UTC) + timedelta(minutes=settings.AUTH_SETTINGS.access_token_expire_minutes),
                 }
             ),
-            token_type="Bearer"
+            token_type="Bearer",
+            user=user[0].id
         )
 
     def validate_jwt(self, manager: IUserManager, jwt: str):
