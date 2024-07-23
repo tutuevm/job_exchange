@@ -9,6 +9,7 @@ if TYPE_CHECKING:
     from src.models.Notifications import Notification
 
 from src.database import Base
+from src.schemas.JobResponseType import JobResponseType
 
 
 user_attribute_association = Table(
@@ -21,6 +22,7 @@ user_job_association = Table(
     'user_job_association', Base.metadata,
     Column('user_id', alchemy_uuid, ForeignKey('users.id'), primary_key=True),
           Column('job_id', alchemy_uuid, ForeignKey('jobs.id'), primary_key=True),
+          Column('status', String(50), default=JobResponseType.SUBMITTED.value ,nullable=False)
 )
 
 class User(Base):
@@ -34,6 +36,7 @@ class User(Base):
     hashed_password: Mapped[bytes] = mapped_column(LargeBinary)
     assigned_jobs: Mapped[List["Job"]] = relationship("Job", secondary=user_job_association, back_populates='responded_users')
     notifications: Mapped[List["Notification"]] = relationship(back_populates="user")
+    created_jobs: Mapped[List["Job"]] = relationship(back_populates="owner")
     is_active : Mapped[bool] = mapped_column(default=True)
 
 
@@ -50,6 +53,7 @@ class UserAttribute(Base):
 class Job(Base):
     __tablename__ = 'jobs'
     id : Mapped[UUID] = mapped_column(primary_key=True)
+    status: Mapped[str] = mapped_column(String(50), index=True)
     price : Mapped[int]
     title : Mapped[str] = mapped_column(String(100))
     description: Mapped[str] = mapped_column(String(400))
@@ -61,7 +65,9 @@ class Job(Base):
     finished_at: Mapped[datetime] = mapped_column(DateTime)
     action_type: Mapped[UUID] = mapped_column(ForeignKey('action_types.id'))
     location: Mapped[UUID] = mapped_column(ForeignKey('places.id'))
-    is_active: Mapped[bool] = mapped_column(Boolean)
+    is_active: Mapped[bool] = mapped_column(Boolean, index=True,)
     organization_id: Mapped[UUID] = mapped_column(ForeignKey('organizations.id'))
     job_address: Mapped[str] = mapped_column(String(200))
     responded_users: Mapped[List["User"]] = relationship('User', secondary=user_job_association, back_populates='assigned_jobs')
+    owner_id: Mapped[UUID] = mapped_column(ForeignKey("users.id"), index=True, nullable=False)
+    owner: Mapped["User"] = relationship(back_populates="created_jobs")

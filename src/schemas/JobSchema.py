@@ -1,6 +1,7 @@
 from pydantic import BaseModel, Field
 from uuid import UUID, uuid4
 from datetime import datetime, timedelta
+from enum import Enum
 
 
 class JobSchema(BaseModel):
@@ -14,4 +15,7 @@ class JobSchema(BaseModel):
     location: UUID
     is_active: bool = Field(default=True)
     job_address: str = Field(max_length=200)
+    owner_id: UUID
     organization_id : UUID
+
+
