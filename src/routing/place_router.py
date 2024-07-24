@@ -6,7 +6,7 @@ from src.services.PlaceService import PlaceService
 
 place_router = APIRouter(
     prefix='/place',
-    tags=["Place"]
+    tags=["job references"]
 )
 
 @place_router.post("/add_place")

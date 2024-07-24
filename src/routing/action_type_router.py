@@ -7,7 +7,7 @@ from src.services.ActionTypeService import ActionTypeService
 
 action_type_router = APIRouter(
     prefix='/action_type',
-    tags=["action_type"]
+    tags=["job references"]
 )
 
 

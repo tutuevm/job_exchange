@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends
 from uuid import UUID
-from typing import Annotated
+from typing import Annotated, List
 from pydantic import BaseModel
 
 
@@ -23,7 +23,7 @@ async def create_job_elem(
     return status
 
 
-@job_router.get('/get_jobs')
+@job_router.get('/get_jobs', response_model=List[JobSchema])
 async def get_jobs(
         uow : UOWDependence,
         q: JobFilter = Depends()

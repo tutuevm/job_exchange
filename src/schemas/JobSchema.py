@@ -7,6 +7,8 @@ from enum import Enum
 
 class JobSchema(BaseModel):
     id: UUID = Field(default_factory=uuid4)
+    status:UUID
+    type:UUID
     title: str = Field(max_length=100)
     ''' type: JobType = Field(JobType.HOURLY_PAYMENT.value)'''
     price: int
@@ -14,9 +16,9 @@ class JobSchema(BaseModel):
     started_at: datetime = Field(default=datetime.now())
     finished_at: datetime = Field(default=datetime.now() + timedelta(days=1))
     action_type: UUID
-    location: UUID
+    city: UUID
+    job_location: str = Field(max_length=400)
     is_active: bool = Field(default=True)
-    job_address: str = Field(max_length=200)
     owner_id: UUID
     organization_id: UUID
 

@@ -1,11 +1,11 @@
 from sqlalchemy.orm import mapped_column, Mapped, relationship
 from sqlalchemy import ForeignKey, String, Table, Column, DateTime, Boolean, LargeBinary, func
 from sqlalchemy.dialects.postgresql import UUID as alchemy_uuid
-from uuid import UUID
+from uuid import UUID, uuid4
 from typing import List, TYPE_CHECKING
 from datetime import datetime
 
-from src.schemas.JobSchema import JobStatus
+
 
 if TYPE_CHECKING:
     from src.models.Notifications import Notification
@@ -71,7 +71,6 @@ class Job(Base):
     job_location : Mapped[str] = mapped_column(String(400))
     is_active: Mapped[bool] = mapped_column(Boolean, index=True,)
     organization_id: Mapped[UUID] = mapped_column(ForeignKey('organizations.id'))
-    job_address: Mapped[str] = mapped_column(String(200))
     owner_id: Mapped[UUID] = mapped_column(ForeignKey("users.id"), index=True, nullable=False)
 
     responded_users: Mapped[List["User"]] = relationship('User', secondary=user_job_association, back_populates='assigned_jobs')
