@@ -23,11 +23,11 @@ async def auth_user_issue_jwt(
         return JSONResponse(status_code=e.status_code, content=e.detail)
 
 @auth_router.post('/check_jwt')
-def check_jwt(
+async def check_jwt(
         manager: UserManagerDependence,
         jwt: str
 ):
     try:
-        return AuthService().validate_jwt(manager=manager, jwt=jwt)
+        return await AuthService().validate_jwt(manager=manager, jwt=jwt)
     except HTTPException as e:
         return JSONResponse(status_code=e.status_code, content=e.detail)

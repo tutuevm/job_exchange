@@ -10,3 +10,4 @@ class Organization(Base):
 
     id: Mapped[UUID] = mapped_column(primary_key=True)
     title: Mapped[str] = mapped_column(String(100))
+

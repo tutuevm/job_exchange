@@ -1,9 +1,11 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, Depends
 from uuid import UUID
+from typing import Annotated
+from pydantic import BaseModel
 
 
 from src.depends import UOWDependence
-from src.schemas.JobSchema import JobSchema
+from src.schemas.JobSchema import JobSchema, JobFilter
 from src.services.JobService import JobService
 
 job_router = APIRouter(
@@ -21,8 +23,11 @@ async def create_job_elem(
     return status
 
 
-@job_router.get('/all')
-async def get_jobs(uow : UOWDependence):
+@job_router.get('/get_jobs')
+async def get_jobs(
+        uow : UOWDependence,
+        q: JobFilter = Depends()
+):
     result = await JobService().get_all_jobs(uow=uow)
     return result
 
