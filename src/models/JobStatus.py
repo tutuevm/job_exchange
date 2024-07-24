@@ -8,11 +8,6 @@ from src.database import Base
 class JobStatus(Base):
     __tablename__ = 'job_status'
 
-    id: Mapped[UUID] = mapped_column(primary_key=True, default=uuid4())
+    id: Mapped[UUID] = mapped_column(primary_key=True, default=uuid4)
     title: Mapped[str] = mapped_column(String(20))
 
-class JobType(Base):
-    __tablename__ = 'job_types'
-
-    id: Mapped[UUID] = mapped_column(primary_key=True, default=uuid4())
-    title: Mapped[str] = mapped_column(String(50))

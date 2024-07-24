@@ -5,8 +5,8 @@ from src.depends import UOWDependence
 from src.services.OrganizationService import OrgganzationService
 
 organization_router = APIRouter(
-    prefix = '/job_provider',
-    tags=['Job Provider']
+    prefix = '/organization',
+    tags=['job references']
 )
 
 

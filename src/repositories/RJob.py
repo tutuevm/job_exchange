@@ -4,7 +4,8 @@ from uuid import UUID
 
 from src.utils.repository import SQLAlchemyRepository
 from src.models.User import Job
-from src.models.JobReferences import JobType, JobStatus
+from src.models.JobStatus import  JobStatus
+from src.models.JobType import JobType
 
 
 class JobStatusRepository(SQLAlchemyRepository):

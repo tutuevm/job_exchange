@@ -5,17 +5,6 @@ from enum import Enum
 
 
 
-class JobType(Enum):
-    HOURLY_PAYMENT = "Почасовая оплата"
-    SALARY = "Оплата по факту выполненной работы"
-
-class JobStatus(Enum):
-    DRAFT = 'Черновик'
-    CREATED = 'Создана'
-    UNDER_REVIEW = 'На проверке'
-    COMPLETED = 'Выполнена'
-    CLOSED = 'Закрыта'
-
 class JobSchema(BaseModel):
     id: UUID = Field(default_factory=uuid4)
     title: str = Field(max_length=100)
