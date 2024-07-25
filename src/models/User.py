@@ -1,5 +1,5 @@
 from sqlalchemy.orm import mapped_column, Mapped, relationship
-from sqlalchemy import ForeignKey, String, Table, Column, DateTime, Boolean, LargeBinary, func
+from sqlalchemy import ForeignKey, String, Table, Column, DateTime, Boolean, LargeBinary, func, Enum
 from sqlalchemy.dialects.postgresql import UUID as alchemy_uuid
 from uuid import UUID, uuid4
 from typing import List, TYPE_CHECKING
@@ -9,6 +9,7 @@ from datetime import datetime
 
 if TYPE_CHECKING:
     from src.models.Notifications import Notification
+    from src.models.Transaction import Transaction
 
 from src.database import Base
 from src.schemas.JobResponseType import JobResponseType
@@ -24,7 +25,7 @@ user_job_association = Table(
     'user_job_association', Base.metadata,
     Column('user_id', alchemy_uuid, ForeignKey('users.id'), primary_key=True),
           Column('job_id', alchemy_uuid, ForeignKey('jobs.id'), primary_key=True),
-          Column('status', String(50), default=JobResponseType.SUBMITTED.value ,nullable=False)
+          Column('response_status', Enum(JobResponseType), default=JobResponseType.SUBMITTED.name ,nullable=False)
 )
 
 class User(Base):
@@ -36,11 +37,12 @@ class User(Base):
     login: Mapped[str] = mapped_column(String(50), unique=True, index=True)
     email: Mapped[str] = mapped_column(String(50), unique=True, index=True)
     hashed_password: Mapped[bytes] = mapped_column(LargeBinary)
-    assigned_jobs: Mapped[List["Job"]] = relationship("Job", secondary=user_job_association, back_populates='responded_users')
     notifications: Mapped[List["Notification"]] = relationship(back_populates="user")
-    created_jobs: Mapped[List["Job"]] = relationship(back_populates="owner")
     is_active : Mapped[bool] = mapped_column(default=True)
 
+    created_jobs: Mapped[List["Job"]] = relationship(back_populates="owner")
+    assigned_jobs: Mapped[List["Job"]] = relationship("Job", secondary=user_job_association, back_populates='responded_users')
+    transactions_list : Mapped[List["Transactions"]] = relationship()
 
 class UserAttribute(Base):
     __tablename__ = 'user_attributes'
