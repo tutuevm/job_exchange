@@ -5,7 +5,7 @@ from pydantic import BaseModel
 
 
 from src.depends import UOWDependence
-from src.schemas.JobSchema import JobSchema, JobFilter
+from src.schemas.JobSchema import JobSchema, JobFilter, return_filter
 from src.services.JobService import JobService
 
 job_router = APIRouter(
@@ -26,9 +26,10 @@ async def create_job_elem(
 @job_router.get('/get_jobs', response_model=List[JobSchema])
 async def get_jobs(
         uow : UOWDependence,
-        q: JobFilter = Depends()
+        q: Annotated[dict, Depends(return_filter)]
 ):
-    result = await JobService().get_all_jobs(uow=uow)
+    result = await JobService().get_jobs(uow=uow, filter=q)
+
     return result
 
 

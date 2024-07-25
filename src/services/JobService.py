@@ -1,6 +1,6 @@
 from typing import List
 
-from src.schemas.JobSchema import JobSchema
+from src.schemas.JobSchema import JobSchema, JobFilter
 from src.utils.UnitOfWork import InterfaceUnitOfWork
 from uuid import UUID
 from sqlalchemy.exc import IntegrityError
@@ -14,9 +14,9 @@ class JobService:
             status = await uow.job.add_one(job_data)
         return status
 
-    async def get_all_jobs(self, uow: InterfaceUnitOfWork) -> List:
+    async def get_jobs(self, uow: InterfaceUnitOfWork, filter: JobFilter) -> List:
         async with uow:
-            jobs = await uow.job.get_all()
+            jobs = await uow.job.get_jobs_by_filter(filter=filter)
         return jobs
 
     async def delete_job_by_id(self, uow: InterfaceUnitOfWork, id: UUID):
