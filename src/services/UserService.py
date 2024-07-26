@@ -1,6 +1,8 @@
 from uuid import UUID
 
-from src.models.User import UserAttribute, Job
+from fastapi import HTTPException
+
+from src.models.User import UserAttribute, Job, User
 from src.schemas.UserSchema import UserSchema, UserInfo
 from src.utils.UnitOfWork import InterfaceUnitOfWork
 from src.auth.UserManager import UserManager
@@ -13,9 +15,19 @@ class UserService:
             place_title = await uow.user.get_all()
             return place_title
 
+    async def check_user_exist(self,uow: InterfaceUnitOfWork, **filter_by):
+        async with uow:
+            result = await uow.user.find_by_filter(**filter_by)
+        return len(result) > 0
+
+
     async def register_user(self, uow:InterfaceUnitOfWork, user: UserSchema) -> dict:
         user_data = user.model_dump()
         async with uow:
+            if await self.check_user_exist(uow=uow,email=user_data['email']):
+                raise HTTPException(status_code=401, detail={"warning": "email address is already taken"})
+            if await self.check_user_exist(uow=uow,login=user_data['login']):
+                raise HTTPException(status_code=401, detail={"warning": "username is already taken"})
             user_data['hashed_password'] = UserManager().hash_password(user_data['hashed_password'])
             await uow.user.add_one(user_data)
         return {"status": "OK"}

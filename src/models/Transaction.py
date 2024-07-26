@@ -2,9 +2,7 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy import func, ForeignKey, Enum
 from uuid import UUID, uuid4
 from datetime import datetime, UTC
-from typing import TYPE_CHECKING
-if TYPE_CHECKING:
-    from src.models.User import User
+
 
 from src.database import Base
 from src.schemas.TransactionSchema import TransactionStatus, TransactionType

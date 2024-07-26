@@ -9,6 +9,12 @@ class UserSchema(BaseModel):
     email: EmailStr = Field(max_length=50)
     hashed_password: str
 
+class ResponseUserSchema(BaseModel):
+    id : UUID = Field(default_factory=uuid4)
+    full_name: str = Field(max_length=50)
+    login: str = Field(max_length=50)
+    email: EmailStr = Field(max_length=50)
+
 class UserInfo(BaseModel):
     id: UUID
     full_name: str

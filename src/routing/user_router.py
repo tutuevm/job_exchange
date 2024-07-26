@@ -1,7 +1,10 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, HTTPException
 from uuid import UUID
 
-from src.schemas.UserSchema import UserSchema, UserInfo
+from starlette.responses import JSONResponse
+from typing_extensions import List
+
+from src.schemas.UserSchema import UserSchema, UserInfo, ResponseUserSchema
 from src.depends import UOWDependence
 from src.services.UserService import UserService
 
@@ -11,7 +14,7 @@ user_router = APIRouter(
     tags = ['user manager']
 )
 
-@user_router.get('/get_all')
+@user_router.get('/get_all', response_model=List[ResponseUserSchema])
 async def get_all_users(
         uow: UOWDependence
 ):
@@ -28,9 +31,12 @@ async def get_user_by_id(
 
 
 @user_router.post('/register_user')
-async def reg_user(uow:UOWDependence, user: UserSchema) -> dict:
-    status = await UserService().register_user(uow=uow, user=user)
-    return status
+async def reg_user(uow:UOWDependence, user: UserSchema):
+    try:
+        status = await UserService().register_user(uow=uow, user=user)
+        return status
+    except HTTPException as e:
+        return JSONResponse(status_code=e.status_code, content=e.detail)
 
 @user_router.post('/append_attr')
 async def append_user_attr(uow:UOWDependence,user_id: UUID, attr_id: UUID):
