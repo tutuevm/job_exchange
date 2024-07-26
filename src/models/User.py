@@ -5,8 +5,6 @@ from uuid import UUID, uuid4
 from typing import List, TYPE_CHECKING
 from datetime import datetime
 
-
-
 if TYPE_CHECKING:
     from src.models.Notifications import Notification
     from src.models.Transaction import Transaction
@@ -32,7 +30,6 @@ class User(Base):
     __tablename__ = "users"
 
     id: Mapped[UUID] = mapped_column(primary_key=True)
-    attributes: Mapped[List["UserAttribute"]] = relationship("UserAttribute", secondary=user_attribute_association, back_populates='user' )
     full_name: Mapped[str] = mapped_column(String(50))
     login: Mapped[str] = mapped_column(String(50), unique=True, index=True)
     email: Mapped[str] = mapped_column(String(50), unique=True, index=True)
@@ -40,10 +37,11 @@ class User(Base):
     notifications: Mapped[List["Notification"]] = relationship(back_populates="user")
     is_active : Mapped[bool] = mapped_column(default=True)
 
+    attributes: Mapped[List["UserAttribute"]] = relationship("UserAttribute", secondary=user_attribute_association,
+                                                             back_populates='user')
     created_jobs: Mapped[List["Job"]] = relationship(back_populates="owner")
     assigned_jobs: Mapped[List["Job"]] = relationship("Job", secondary=user_job_association, back_populates='responded_users')
-    transactions_list : Mapped[List["Transactions"]] = relationship()
-
+    transactions_list : Mapped[List["Transaction"]] = relationship()
 class UserAttribute(Base):
     __tablename__ = 'user_attributes'
 

@@ -28,6 +28,7 @@ class JobService:
                 return {'status': 'failed',
                         'error': f'There are still references to id={id} in other database tables'}
 
+
     async def get_all_responded_users(self, uow: InterfaceUnitOfWork, job_id: UUID):
         async with uow:
             users = await uow.job.get_relationship(job_id, 'responded_users')
