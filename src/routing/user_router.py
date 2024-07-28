@@ -30,7 +30,7 @@ async def get_user_by_id(
     return result
 
 
-@user_router.post('/register_user')
+@user_router.post('/register_user', response_model=ResponseUserSchema)
 async def reg_user(uow:UOWDependence, user: UserSchema):
     try:
         status = await UserService().register_user(uow=uow, user=user)

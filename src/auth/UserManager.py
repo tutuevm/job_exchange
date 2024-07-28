@@ -2,6 +2,9 @@ import bcrypt
 import jwt
 from abc import ABC, abstractmethod
 from typing import Dict
+from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
+from fastapi import Depends
+
 
 from src.config import settings
 
@@ -26,7 +29,7 @@ class IUserManager(ABC):
 
 
 class UserManager(IUserManager):
-
+    http_bearer = HTTPBearer()
     def hash_password(self, password) -> bytes:
         salt = bcrypt.gensalt()
         pwd_bytes: bytes = password.encode()
@@ -50,3 +53,11 @@ class UserManager(IUserManager):
             algorithm=settings.AUTH_SETTINGS.algorithm
     ):
         return jwt.decode(jwt=token, key=public_key, algorithms=[algorithm])
+
+
+    def get_current_auth_user(
+            self,
+            cred: HTTPAuthorizationCredentials = Depends(http_bearer)
+    ):
+        token = cred.credentials
+        return self.check_jwt(token=token)
