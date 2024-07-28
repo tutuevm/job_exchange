@@ -10,7 +10,7 @@ from src.config import settings
 
 
 class IUserManager(ABC):
-
+    http_bearer = HTTPBearer()
     @abstractmethod
     def hash_password(self, password: str) -> bytes:
         raise NotImplementedError
@@ -27,6 +27,12 @@ class IUserManager(ABC):
     def check_jwt(self, token: str, public_key: str, algorithm: str) -> Dict:
         raise NotImplementedError
 
+    @abstractmethod
+    def get_current_auth_user_payload(
+            self,
+            cred: HTTPAuthorizationCredentials = Depends(HTTPBearer)
+    ):
+        raise NotImplementedError
 
 class UserManager(IUserManager):
     http_bearer = HTTPBearer()
@@ -55,7 +61,7 @@ class UserManager(IUserManager):
         return jwt.decode(jwt=token, key=public_key, algorithms=[algorithm])
 
 
-    def get_current_auth_user(
+    def get_current_auth_user_payload(
             self,
             cred: HTTPAuthorizationCredentials = Depends(http_bearer)
     ):

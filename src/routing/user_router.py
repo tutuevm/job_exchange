@@ -1,12 +1,14 @@
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Depends
 from uuid import UUID
 
 from starlette.responses import JSONResponse
 from typing_extensions import List
 
+from src.auth.auth_router import check_jwt
 from src.schemas.UserSchema import UserSchema, UserInfo, ResponseUserSchema
 from src.depends import UOWDependence
 from src.services.UserService import UserService
+
 
 
 user_router = APIRouter(
@@ -14,7 +16,7 @@ user_router = APIRouter(
     tags = ['user manager']
 )
 
-@user_router.get('/get_all', response_model=List[ResponseUserSchema])
+@user_router.get('/get_all', response_model=List[ResponseUserSchema], dependencies=[Depends(check_jwt)])
 async def get_all_users(
         uow: UOWDependence
 ):

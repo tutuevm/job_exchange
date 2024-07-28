@@ -45,3 +45,12 @@ class AuthService:
             raise HTTPException(status_code=401, detail={'warning': 'ExpiredSignatureError'})
         except InvalidSignatureError:
             raise HTTPException(status_code=401, detail={'warning': 'InvalidSignatureError'})
+
+    async def get_current_auth_user(self, uow: InterfaceUnitOfWork, payload):
+        user_email = payload['sub']
+        async with uow:
+            user = await uow.user.find_by_filter(email=user_email)
+        return {
+            'id' : user[0].id,
+            'username' : user[0].login
+        }

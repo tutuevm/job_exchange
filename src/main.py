@@ -11,6 +11,8 @@ app = FastAPI(title=settings.API_TITLE,
               redoc_url=None,
               )
 
+
+
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["http://172.23.96.1:3000", "http://127.0.0.1:3000"],
@@ -18,6 +20,7 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
 
 for router in router_list:
     app.include_router(router)
