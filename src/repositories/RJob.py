@@ -42,7 +42,7 @@ class JobRepository(SQLAlchemyRepository):
 
         query = query.offset(filter['skip']).limit(filter['limit']).options(
             joinedload(Job.action_type)
-        ).options(joinedload(Job.city)).options(joinedload(Job.status)).options(joinedload(Job.type))
+        ).options(joinedload(Job.city))
 
         result = await self.session.execute(query)
         jobs = result.scalars().all()

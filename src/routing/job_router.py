@@ -23,17 +23,8 @@ async def create_job_elem(
     return status
 
 
-@job_router.get('/get_jobs', response_model=List[JobSchema])
+@job_router.get('/get_jobs', response_model=List[JobResponseSchema])
 async def get_jobs(
-        uow : UOWDependence,
-        q: Annotated[dict, Depends(return_filter)]
-):
-    result = await JobService().get_jobs(uow=uow, filter=q)
-
-    return result
-
-@job_router.get('/test_get_jobs', response_model=List[JobResponseSchema])
-async def test_get_jobs(
         uow : UOWDependence,
         q: Annotated[dict, Depends(return_filter)]
 ):
