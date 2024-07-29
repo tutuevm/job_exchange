@@ -47,13 +47,11 @@ class JobService:
 
     async def accept_and_close_job(self, uow: InterfaceUnitOfWork, job_id: UUID):
         async with uow:
-            closed_status = (await uow.job_status.find_by_filter(title=JobStatusSchema.CLOSED.value))[0].id
-            completed_status = (await uow.job_status.find_by_filter(title = JobStatusSchema.COMPLETED.value))[0].id
-            job = (await uow.job.find_by_filter(id=job_id))[0]
-            if job.status != completed_status:
+            job = await uow.job.find_by_filter(id=job_id)
+            if job[0].status_value != JobStatusSchema.COMPLETED.name:
                 raise HTTPException(
                     status_code=status.HTTP_400_BAD_REQUEST,
-                    detail=f'Invalid job status. Expected - {JobStatusSchema.COMPLETED}'
+                    detail=f'Invalid job status. Expected - {JobStatusSchema.COMPLETED.name}'
                 )
-            result = await uow.job.update_value(elem=job, status_id=closed_status)
+            result = await uow.job.update_value(elem=job, status_id=JobStatusSchema.CLOSED.name)
             return result
