@@ -7,5 +7,6 @@ class UserLoginSchema(BaseModel):
 
 class TokenInfo(BaseModel):
     access_token: str
+    refresh_token: str | None = None
     token_type: str
-    user : UUID
+    user : UUID | None = None

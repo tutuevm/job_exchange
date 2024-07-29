@@ -16,11 +16,8 @@ async def auth_user_issue_jwt(
         user_data: UserLoginSchema,
         uow: UOWDependence
 ):
-    try:
-        result = await AuthService().auth_user_issue_jwt( uow=uow, manager=manager, user=user_data)
-        return result
-    except HTTPException as e:
-        return JSONResponse(status_code=e.status_code, content=e.detail)
+    result = await AuthService().auth_user_issue_jwt( uow=uow, manager=manager, user=user_data)
+    return result
 
 @auth_router.post('/check_jwt')
 async def check_jwt(
@@ -32,9 +29,16 @@ async def check_jwt(
     except HTTPException as e:
         return JSONResponse(status_code=e.status_code, content=e.detail)
 
-@auth_router.post('/check_user')
+@auth_router.get('/check_user')
 async def check_jwt(
         uow: UOWDependence,
         payload: UserPayloadDependence
 ):
     return await AuthService().get_current_auth_user(uow=uow, payload=payload)
+
+@auth_router.post('/refresh_access_token', response_model=TokenInfo, response_model_exclude_none=True)
+async def refresh_access_tiken(
+        manager: UserManagerDependence,
+        payload: UserPayloadDependence
+):
+    return AuthService().refresh_auth_cuurent_user(manager=manager, payload=payload)
