@@ -57,7 +57,6 @@ class SQLAlchemyRepository(AbstractRepository):
         return {'status': f'elem with {filter_by} deleted'}
 
     async def update_value(self, elem, **update_data):
-        print(elem)
         for key, value in update_data.items():
             if hasattr(elem, key):
                 setattr(elem, key, value)

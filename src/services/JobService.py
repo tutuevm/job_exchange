@@ -1,9 +1,10 @@
 from typing import List
+from uuid import UUID
+from fastapi import HTTPException, status
 
 from src.schemas.JobResponseType import JobResponseType
-from src.schemas.JobSchema import JobSchema, JobFilter
+from src.schemas.JobSchema import JobSchema, JobFilter, JobStatusSchema
 from src.utils.UnitOfWork import InterfaceUnitOfWork
-from uuid import UUID
 from sqlalchemy.exc import IntegrityError
 
 
@@ -37,8 +38,22 @@ class JobService:
 
     async def accept_responded_user(self, uow: InterfaceUnitOfWork, user_id: UUID, job_id: UUID):
         async with uow:
+            current_status = await uow.user_job_association.get_association(user_id=user_id, job_id=job_id)
+            if current_status.response_status != JobResponseType.SUBMITTED:
+                raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=f'Invalid response status. Expected - {JobResponseType.SUBMITTED}, arrived - {current_status.response_status}' )
             result = await uow.user_job_association.change_status_association(user_id=user_id, job_id=job_id, status=JobResponseType.ACCEPTED)
         return result
 
 
-
+    async def accept_and_close_job(self, uow: InterfaceUnitOfWork, job_id: UUID):
+        async with uow:
+            closed_status = (await uow.job_status.find_by_filter(title=JobStatusSchema.CLOSED.value))[0].id
+            completed_status = (await uow.job_status.find_by_filter(title = JobStatusSchema.COMPLETED.value))[0].id
+            job = (await uow.job.find_by_filter(id=job_id))[0]
+            if job.status != completed_status:
+                raise HTTPException(
+                    status_code=status.HTTP_400_BAD_REQUEST,
+                    detail=f'Invalid job status. Expected - {JobStatusSchema.COMPLETED}'
+                )
+            result = await uow.job.update_value(elem=job, status_id=closed_status)
+            return result

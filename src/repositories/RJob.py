@@ -5,16 +5,7 @@ from uuid import UUID
 from src.schemas.JobSchema import JobFilter
 from src.utils.repository import SQLAlchemyRepository
 from src.models.User import Job
-from src.models.JobStatus import  JobStatus
-from src.models.JobType import JobType
 
-
-class JobStatusRepository(SQLAlchemyRepository):
-    model = JobStatus
-
-
-class JobTypeRepository(SQLAlchemyRepository):
-    model = JobType
 
 
 class JobRepository(SQLAlchemyRepository):

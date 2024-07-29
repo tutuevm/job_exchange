@@ -5,10 +5,11 @@ from uuid import UUID, uuid4
 from typing import List, TYPE_CHECKING
 from datetime import datetime
 
+from src.schemas.JobSchema import JobStatusSchema, JobTypeSchema
+
 if TYPE_CHECKING:
     from src.models.Notifications import Notification
     from src.models.Transaction import Transaction
-    from src.models.JobStatus import JobStatus
     from src.models.JobType import JobType
     from src.models.Place import Place
     from src.models.ActionType import ActionType
@@ -46,6 +47,7 @@ class User(Base):
     created_jobs: Mapped[List["Job"]] = relationship(back_populates="owner")
     assigned_jobs: Mapped[List["Job"]] = relationship("Job", secondary=user_job_association, back_populates='responded_users')
     transactions_list : Mapped[List["Transaction"]] = relationship()
+
 class UserAttribute(Base):
     __tablename__ = 'user_attributes'
 
@@ -59,8 +61,8 @@ class UserAttribute(Base):
 class Job(Base):
     __tablename__ = 'jobs'
     id : Mapped[UUID] = mapped_column(primary_key=True)
-    status_id: Mapped[UUID] = mapped_column(ForeignKey('job_status.id'), index=True)
-    type_id : Mapped[UUID] = mapped_column(ForeignKey('job_types.id'), index=True)
+    status_value: Mapped[str] = mapped_column(Enum(JobStatusSchema), index=True)
+    type_value : Mapped[str] = mapped_column(Enum(JobTypeSchema), index=True)
     price : Mapped[int]
     title : Mapped[str] = mapped_column(String(100))
     description: Mapped[str] = mapped_column(String(400))
@@ -79,7 +81,5 @@ class Job(Base):
 
     responded_users: Mapped[List["User"]] = relationship('User', secondary=user_job_association, back_populates='assigned_jobs')
     owner: Mapped["User"] = relationship(back_populates="created_jobs")
-    status : Mapped['JobStatus'] = relationship()
-    type : Mapped['JobType'] = relationship()
-    action_type : Mapped['ActionType'] = relationship()
-    city : Mapped['Place'] = relationship()
+    action_type: Mapped['ActionType'] = relationship()
+    city: Mapped['Place'] = relationship()

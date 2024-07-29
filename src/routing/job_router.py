@@ -70,3 +70,13 @@ async def accept_responded_user(
         job_id=job_id
     )
     return result
+
+@job_router.put('/accept_and_close_job')
+async def accept_and_close_job(
+        uow: UOWDependence,
+        job_id: UUID
+):
+    result = await JobService().accept_and_close_job(
+        uow=uow, job_id=job_id
+    )
+    return result

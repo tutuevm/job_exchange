@@ -3,12 +3,25 @@ from pydantic import BaseModel, Field
 from uuid import UUID, uuid4
 from datetime import datetime, timedelta
 from typing import Optional, List
+from enum import Enum
 
+
+class JobTypeSchema(Enum):
+    HOURLY_PAY = 'Почасовая оплата'
+    SALARY = 'Оплата по факту выаолнения работы'
+
+
+class JobStatusSchema(Enum):
+    DRAFT = 'Черновик'
+    CRATED = 'Создана'
+    ANDER_REVIEW = "На проверке"
+    COMPLETED = "Выполнена"
+    CLOSED = "Закрыта"
 
 class JobSchema(BaseModel):
     id: UUID = Field(default_factory=uuid4)
-    status_id:UUID
-    type_id:UUID
+    status_value: JobStatusSchema
+    type_value: JobTypeSchema
     title: str = Field(max_length=100)
     price: int
     description: str = Field(max_length=400)
@@ -20,21 +33,6 @@ class JobSchema(BaseModel):
     is_active: bool = Field(default=True)
     owner_id: UUID
     organization_id: UUID
-
-
-class TypeSchema(BaseModel):
-    id: UUID
-    title: str
-
-    class Config:
-        orm_mode = True
-
-class StatusSchema(BaseModel):
-    id: UUID
-    title: str
-
-    class Config:
-        orm_mode = True
 
 class ActionTypeSchema(BaseModel):
     id: UUID
@@ -63,8 +61,8 @@ class JobResponseSchema(BaseModel):
     owner_id: UUID
     city: CitySchema
     action_type: ActionTypeSchema
-    type: TypeSchema
-    status: StatusSchema
+    type_value: str
+    status_value: str
 
 class JobFilter(BaseModel):
     owner_id: UUID | None = Field(Query(None))
@@ -74,6 +72,7 @@ class JobFilter(BaseModel):
     price_max: int | None = Field(Query(None))
     skip : int = 0
     limit: int = 10
+
 
 
 

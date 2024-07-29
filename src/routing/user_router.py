@@ -16,7 +16,7 @@ user_router = APIRouter(
     tags = ['user manager']
 )
 
-@user_router.get('/get_all', response_model=List[ResponseUserSchema], dependencies=[Depends(check_jwt)])
+@user_router.get('/get_all', response_model=List[ResponseUserSchema])
 async def get_all_users(
         uow: UOWDependence
 ):

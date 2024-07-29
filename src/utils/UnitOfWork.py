@@ -3,7 +3,7 @@ from typing import Type
 
 from src.database import async_session_maker, test_session_maker
 from src.repositories.RActionType import ActionTypeRepository
-from src.repositories.RJob import JobRepository, JobStatusRepository, JobTypeRepository
+from src.repositories.RJob import JobRepository
 from src.repositories.RPlace import PlaceRepository
 from src.repositories.RUser import UserRepository
 from src.repositories.UserAttributeRepository import UserAttributeRepository
@@ -18,8 +18,6 @@ class InterfaceUnitOfWork:
         user : Type[UserRepository]
         job : Type[JobRepository]
         org : Type[OrganizationRepository]
-        job_status: Type[JobStatusRepository]
-        job_type: Type[JobTypeRepository]
         user_job_association: Type[UserJobAssociationRepository]
 
         async def __aenter__(self):
@@ -49,8 +47,6 @@ class UnitOfWork:
         self.user = UserRepository(self.session)
         self.job = JobRepository(self.session)
         self.org = OrganizationRepository(self.session)
-        self.job_status = JobStatusRepository(self.session)
-        self.job_type = JobTypeRepository(self.session)
         self.user_job_association = UserJobAssociationRepository(self.session)
 
     async def __aexit__(self, exc_type, exc_val, exc_tb):
