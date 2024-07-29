@@ -3,8 +3,8 @@ import jwt
 from abc import ABC, abstractmethod
 from typing import Dict
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
-from fastapi import Depends
-
+from fastapi import Depends, status, HTTPException
+from jwt import ExpiredSignatureError
 
 from src.config import settings
 
@@ -66,4 +66,10 @@ class UserManager(IUserManager):
             cred: HTTPAuthorizationCredentials = Depends(http_bearer)
     ):
         token = cred.credentials
-        return self.check_jwt(token=token)
+        try:
+            return self.check_jwt(token=token)
+        except ExpiredSignatureError:
+            raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail='Signature has expired')
+        except Exception as e:
+            print(e)
+            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail='something wrong')
