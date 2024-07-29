@@ -8,6 +8,10 @@ from datetime import datetime
 if TYPE_CHECKING:
     from src.models.Notifications import Notification
     from src.models.Transaction import Transaction
+    from src.models.JobStatus import JobStatus
+    from src.models.JobType import JobType
+    from src.models.Place import Place
+    from src.models.ActionType import ActionType
 
 from src.database import Base
 from src.schemas.JobResponseType import JobResponseType
@@ -55,8 +59,8 @@ class UserAttribute(Base):
 class Job(Base):
     __tablename__ = 'jobs'
     id : Mapped[UUID] = mapped_column(primary_key=True)
-    status: Mapped[UUID] = mapped_column(ForeignKey('job_status.id'), index=True)
-    type : Mapped[UUID] = mapped_column(ForeignKey('job_types.id'), index=True)
+    status_id: Mapped[UUID] = mapped_column(ForeignKey('job_status.id'), index=True)
+    type_id : Mapped[UUID] = mapped_column(ForeignKey('job_types.id'), index=True)
     price : Mapped[int]
     title : Mapped[str] = mapped_column(String(100))
     description: Mapped[str] = mapped_column(String(400))
@@ -66,8 +70,8 @@ class Job(Base):
     )
     started_at: Mapped[datetime] = mapped_column(DateTime)
     finished_at: Mapped[datetime] = mapped_column(DateTime)
-    action_type: Mapped[UUID] = mapped_column(ForeignKey('action_types.id'))
-    city: Mapped[UUID] = mapped_column(ForeignKey('places.id'), index=True)
+    action_type_id: Mapped[UUID] = mapped_column(ForeignKey('action_types.id'))
+    city_id: Mapped[UUID] = mapped_column(ForeignKey('places.id'), index=True)
     job_location : Mapped[str] = mapped_column(String(400))
     is_active: Mapped[bool] = mapped_column(Boolean, index=True,)
     organization_id: Mapped[UUID] = mapped_column(ForeignKey('organizations.id'))
@@ -75,3 +79,7 @@ class Job(Base):
 
     responded_users: Mapped[List["User"]] = relationship('User', secondary=user_job_association, back_populates='assigned_jobs')
     owner: Mapped["User"] = relationship(back_populates="created_jobs")
+    status : Mapped['JobStatus'] = relationship()
+    type : Mapped['JobType'] = relationship()
+    action_type : Mapped['ActionType'] = relationship()
+    city : Mapped['Place'] = relationship()

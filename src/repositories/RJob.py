@@ -1,5 +1,5 @@
 from sqlalchemy import select, and_
-from sqlalchemy.orm import selectinload
+from sqlalchemy.orm import selectinload, joinedload
 from uuid import UUID
 
 from src.schemas.JobSchema import JobFilter
@@ -49,7 +49,9 @@ class JobRepository(SQLAlchemyRepository):
         if conditions:
             query = query.where(and_(*conditions))
 
-        query = query.offset(filter['skip']).limit(filter['limit'])
+        query = query.offset(filter['skip']).limit(filter['limit']).options(
+            joinedload(Job.action_type)
+        ).options(joinedload(Job.city)).options(joinedload(Job.status)).options(joinedload(Job.type))
 
         result = await self.session.execute(query)
         jobs = result.scalars().all()
