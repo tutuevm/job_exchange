@@ -27,7 +27,7 @@ user_job_association = Table(
     'user_job_association', Base.metadata,
     Column('user_id', alchemy_uuid, ForeignKey('users.id'), primary_key=True),
           Column('job_id', alchemy_uuid, ForeignKey('jobs.id'), primary_key=True),
-          Column('response_status', Enum(JobResponseType), default=JobResponseType.SUBMITTED.name ,nullable=False)
+          Column('response_status', Enum(JobResponseType), default=JobResponseType.SUBMITTED, nullable=False)
 )
 
 class User(Base):

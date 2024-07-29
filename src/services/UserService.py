@@ -39,22 +39,8 @@ class UserService:
         async with uow:
             result = await uow.user.append_many_to_many_elem(user_id=user_id, elem_model=UserAttribute, elem_id=attr_id,
                                                              row_name="attributes")
-        if 'warning' in result:
-            return result
-        return {
-            "user": result.full_name,
-            "attributes": result.attributes,
-            "status": 'the user is assigned an attribute'
-        }
-
-    async def assign_with_job(self, uow: InterfaceUnitOfWork, user_id: UUID, job_id: UUID) -> dict:
-        '''Создание связи с таблицей Job'''
-        async with uow:
-            result = await uow.user.append_many_to_many_elem(user_id=user_id, elem_model=Job, elem_id=job_id,
-                                                             row_name="assigned_jobs")
-        if 'warning' in result:
-            return result
         return result
+
 
     async def unassign_with_job(self, uow: InterfaceUnitOfWork, user_id: UUID, job_id: UUID) -> dict:
         '''Удаление связи с таблицей Job'''
@@ -94,3 +80,10 @@ class UserService:
             elem = await uow.user.find_by_filter(id=user_id)
             result = await uow.user.update_value(elem=elem[0], **update_data)
         return result
+
+
+    async def response_for_job(self, uow: InterfaceUnitOfWork, user_id:UUID, job_id: UUID):
+        '''Откликнуться от имени пользователя на вакансию'''
+        async with uow:
+            elem = await uow.user.append_many_to_many_elem(user_id=user_id, elem_model=Job, elem_id=job_id, row_name="assigned_jobs")
+        return elem

@@ -1,6 +1,6 @@
 from sqlalchemy import select, or_
 from sqlalchemy.orm import selectinload
-from uuid import UUID
+from fastapi import HTTPException, status
 
 from src.utils.repository import SQLAlchemyRepository
 from src.models.User import User
@@ -16,13 +16,9 @@ class UserRepository(SQLAlchemyRepository):
         elem =  await self.session.scalar(select(elem_model).filter_by(id=elem_id))
         user_relationship = getattr(user, row_name)
         if elem in user_relationship:
-            return {'warning' : 'relations is already exist'}
+            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail='relationship is already exist')
         user_relationship.append(elem)
-        return {
-            "user" : user.full_name,
-            "job" : user_relationship,
-            "status" : 'relationship successfully create'
-        }
+        return user_relationship
 
     async def remove_many_to_many_elem(self, user_id, elem_model, elem_id, row_name) -> dict:
         user = await self.session.scalar(

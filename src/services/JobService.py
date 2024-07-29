@@ -1,5 +1,6 @@
 from typing import List
 
+from src.schemas.JobResponseType import JobResponseType
 from src.schemas.JobSchema import JobSchema, JobFilter
 from src.utils.UnitOfWork import InterfaceUnitOfWork
 from uuid import UUID
@@ -33,6 +34,11 @@ class JobService:
         async with uow:
             users = await uow.job.get_relationship(job_id, 'responded_users')
         return users
+
+    async def accept_responded_user(self, uow: InterfaceUnitOfWork, user_id: UUID, job_id: UUID):
+        async with uow:
+            result = await uow.user_job_association.change_status_association(user_id=user_id, job_id=job_id, status=JobResponseType.ACCEPTED)
+        return result
 
 
 

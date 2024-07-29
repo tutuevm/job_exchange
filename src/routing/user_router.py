@@ -55,9 +55,9 @@ async def append_user_attr(uow:UOWDependence,user_id: UUID, attr_id: UUID):
     user = await UserService().append_user_attribute(uow=uow, user_id=user_id,attr_id=attr_id)
     return user
 
-@user_router.post('/assign_with_job')
-async def assign_with_job(uow:UOWDependence,user_id: UUID, job_id: UUID):
-    result = await UserService().assign_with_job(uow=uow, user_id=user_id,job_id=job_id)
+@user_router.post('/response_for_job')
+async def response_for_job(uow:UOWDependence,user_id: UUID, job_id: UUID):
+    result = await UserService().response_for_job(uow=uow, user_id=user_id,job_id=job_id)
     return result
 
 @user_router.delete('/remove_attribute')
@@ -69,6 +69,14 @@ async def unassign_with_job(
     result = await UserService().unassign_with_attribute(uow=uow, user_id=user_id, attr_id=attr_id)
     return result
 
+@user_router.delete('/remove_assign_with_job')
+async def unassign_with_job(
+        uow:UOWDependence,
+        user_id: UUID,
+        job_id: UUID
+):
+    result = await UserService().unassign_with_job(uow=uow, user_id=user_id, job_id=job_id)
+    return result
 @user_router.delete('/remove_user')
 async def remove_user(
         uow:UOWDependence,

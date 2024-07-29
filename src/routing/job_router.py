@@ -57,3 +57,16 @@ async def get_job_relationship(
 ):
     result = await JobService().get_all_responded_users(uow=uow, job_id=job_id)
     return result
+
+@job_router.put('/accept_responded_user')
+async def accept_responded_user(
+        uow: UOWDependence,
+        user_id: UUID,
+        job_id: UUID
+):
+    result = await JobService().accept_responded_user(
+        uow=uow,
+        user_id=user_id,
+        job_id=job_id
+    )
+    return result
