@@ -11,7 +11,7 @@ BASE_DIR = Path(__file__).parent.parent
 
 class AuthSettings(BaseModel):
     algorithm: str = "RS256"
-    access_token_expire_minutes: int = 15
+    access_token_expire_minutes: int = 60 * 24
     refresh_token_expire_days: int = 30
 
 

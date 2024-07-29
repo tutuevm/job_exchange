@@ -21,7 +21,7 @@ class AbstractRepository(ABC):
         raise NotImplementedError
 
     @abstractmethod
-    async def update_cell(self, filter_by: dict, values: dict):
+    async def update_value(self, elem, **update_data):
         raise NotImplementedError
 
 class SQLAlchemyRepository(AbstractRepository):
@@ -47,10 +47,6 @@ class SQLAlchemyRepository(AbstractRepository):
         result = [row[0] for row in result.all()]
         return result
 
-    async def update_cell(self, filter_by: dict, values: dict) -> dict:
-        stmt = (update(self.model).where(**filter_by).values(**values))
-        await self.session.execute(stmt)
-        return {"status": "OK"}
 
     async def delete_one(self, **filter_by):
         elem = await self.session.scalar(select(self.model).filter_by(**filter_by))
@@ -59,3 +55,9 @@ class SQLAlchemyRepository(AbstractRepository):
         stmt = delete(self.model).filter_by(**filter_by)
         await self.session.execute(stmt)
         return {'status': f'elem with {filter_by} deleted'}
+
+    async def update_value(self, elem, **update_data):
+        for key, value in update_data.items():
+            if hasattr(elem, key):
+                setattr(elem, key, value)
+        return elem

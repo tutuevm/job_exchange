@@ -32,6 +32,16 @@ async def get_user_by_id(
     return result
 
 
+@user_router.put('/update_data')
+async def update_user_data(
+    uow: UOWDependence,
+    user_id: UUID,
+    update_data : dict
+):
+    result = await UserService().update_user_data(uow=uow, user_id=user_id, **update_data)
+    return result
+
+
 @user_router.post('/register_user', response_model=ResponseUserSchema)
 async def reg_user(uow:UOWDependence, user: UserSchema):
     try:
