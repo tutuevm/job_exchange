@@ -12,8 +12,8 @@ class Transaction(Base):
     id : Mapped[UUID] = mapped_column(primary_key=True, default=uuid4)
     user_id: Mapped[UUID] = mapped_column(ForeignKey("users.id"), index=True)
     committed_at: Mapped[datetime] = mapped_column(
-        server_default=func.timezone('UTC', func.now()),
-        default=datetime.now(UTC),
+        server_default=func.now(),
+        default=datetime.now(UTC).replace(tzinfo=None),
     )
     amount: Mapped[int] = mapped_column(nullable=False)
     type: Mapped[str] = mapped_column(Enum(TransactionType), nullable=False)

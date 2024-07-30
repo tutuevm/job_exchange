@@ -3,7 +3,7 @@ from uuid import UUID
 from typing import Annotated, List
 from pydantic import BaseModel
 
-
+from src.auth.auth_router import check_jwt
 from src.depends import UOWDependence
 from src.schemas.JobSchema import JobSchema, JobFilter, return_filter, JobResponseSchema
 from src.services.JobService import JobService
@@ -53,21 +53,39 @@ async def get_job_relationship(
 async def accept_responded_user(
         uow: UOWDependence,
         user_id: UUID,
-        job_id: UUID
+        job_id: UUID,
+        current_user= Depends(check_jwt)
 ):
     result = await JobService().accept_responded_user(
         uow=uow,
         user_id=user_id,
-        job_id=job_id
+        job_id=job_id,
+        current_user=current_user
+    )
+    return result
+
+@job_router.put('/set_compete_status_job')
+async def set_compete_status_job(
+        uow: UOWDependence,
+        user_id: UUID,
+        job_id: UUID,
+        current_user= Depends(check_jwt)
+):
+    result = await JobService().set_compete_status_job(
+        uow=uow,
+        user_id=user_id,
+        job_id=job_id,
+        current_user=current_user
     )
     return result
 
 @job_router.put('/accept_and_close_job')
 async def accept_and_close_job(
         uow: UOWDependence,
-        job_id: UUID
+        job_id: UUID,
+        current_user= Depends(check_jwt)
 ):
     result = await JobService().accept_and_close_job(
-        uow=uow, job_id=job_id
+        uow=uow, job_id=job_id, current_user=current_user
     )
     return result

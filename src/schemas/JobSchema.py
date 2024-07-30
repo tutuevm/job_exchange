@@ -34,6 +34,13 @@ class JobSchema(BaseModel):
     owner_id: UUID
     organization_id: UUID
 
+class OrganizationSchema(BaseModel):
+    id: UUID
+    title: str
+
+    class Config:
+        orm_mode = True
+
 class ActionTypeSchema(BaseModel):
     id: UUID
     title: str
@@ -59,6 +66,7 @@ class JobResponseSchema(BaseModel):
     job_location: str
     is_active: bool
     owner_id: UUID
+    organization: OrganizationSchema
     city: CitySchema
     action_type: ActionTypeSchema
     type_value: str

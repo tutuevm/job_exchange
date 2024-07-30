@@ -10,7 +10,7 @@ from src.schemas.JobSchema import JobStatusSchema, JobTypeSchema
 if TYPE_CHECKING:
     from src.models.Notifications import Notification
     from src.models.Transaction import Transaction
-    from src.models.JobType import JobType
+    from src.models.Organization import Organization
     from src.models.Place import Place
     from src.models.ActionType import ActionType
 
@@ -81,5 +81,6 @@ class Job(Base):
 
     responded_users: Mapped[List["User"]] = relationship('User', secondary=user_job_association, back_populates='assigned_jobs')
     owner: Mapped["User"] = relationship(back_populates="created_jobs")
+    organization: Mapped['Organization'] = relationship()
     action_type: Mapped['ActionType'] = relationship()
     city: Mapped['Place'] = relationship()
