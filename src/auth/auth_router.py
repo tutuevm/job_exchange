@@ -30,7 +30,7 @@ async def check_jwt(
         return JSONResponse(status_code=e.status_code, content=e.detail)
 
 @auth_router.get('/check_user')
-async def check_jwt(
+async def check_user(
         uow: UOWDependence,
         payload: UserPayloadDependence
 ):

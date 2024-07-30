@@ -4,7 +4,7 @@ from uuid import UUID
 from starlette.responses import JSONResponse
 from typing_extensions import List
 
-from src.auth.auth_router import check_jwt
+from src.auth.auth_router import check_user
 from src.schemas.UserSchema import UserSchema, UserInfo, ResponseUserSchema
 from src.depends import UOWDependence
 from src.services.UserService import UserService
@@ -29,6 +29,14 @@ async def get_user_by_id(
         user_id:UUID
 ):
     result = await UserService().get_user_by_id(uow=uow, user_id=user_id)
+    return result
+
+@user_router.get('/get_balance')
+async def get_user_balance(
+        uow: UOWDependence,
+        current_user : dict = Depends(check_user)
+) -> int:
+    result = await UserService().get_user_balance(uow=uow, user=current_user)
     return result
 
 

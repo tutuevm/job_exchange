@@ -1,11 +1,10 @@
 from fastapi import APIRouter, Depends
 from uuid import UUID
 from typing import Annotated, List
-from pydantic import BaseModel
 
-from src.auth.auth_router import check_jwt
+from src.auth.auth_router import  check_user
 from src.depends import UOWDependence
-from src.schemas.JobSchema import JobSchema, JobFilter, return_filter, JobResponseSchema
+from src.schemas.JobSchema import JobSchema, return_filter, JobResponseSchema
 from src.services.JobService import JobService
 
 job_router = APIRouter(
@@ -54,7 +53,7 @@ async def accept_responded_user(
         uow: UOWDependence,
         user_id: UUID,
         job_id: UUID,
-        current_user= Depends(check_jwt)
+        current_user= Depends(check_user)
 ):
     result = await JobService().accept_responded_user(
         uow=uow,
@@ -69,7 +68,7 @@ async def set_compete_status_job(
         uow: UOWDependence,
         user_id: UUID,
         job_id: UUID,
-        current_user= Depends(check_jwt)
+        current_user= Depends(check_user)
 ):
     result = await JobService().set_compete_status_job(
         uow=uow,
@@ -83,7 +82,7 @@ async def set_compete_status_job(
 async def accept_and_close_job(
         uow: UOWDependence,
         job_id: UUID,
-        current_user= Depends(check_jwt)
+        current_user= Depends(check_user)
 ):
     result = await JobService().accept_and_close_job(
         uow=uow, job_id=job_id, current_user=current_user

@@ -1,8 +1,9 @@
 from uuid import UUID
 
-from fastapi import HTTPException
+from fastapi import HTTPException, status
 
 from src.models.User import UserAttribute, Job, User
+from src.schemas.TransactionSchema import TransactionType
 from src.schemas.UserSchema import UserSchema, UserInfo
 from src.utils.UnitOfWork import InterfaceUnitOfWork
 from src.auth.UserManager import UserManager
@@ -87,3 +88,17 @@ class UserService:
         async with uow:
             elem = await uow.user.append_many_to_many_elem(user_id=user_id, elem_model=Job, elem_id=job_id, row_name="assigned_jobs")
         return elem
+
+    async def get_user_balance(self, uow: InterfaceUnitOfWork, user) -> int:
+        '''Получение баланса пользователя'''
+        async with uow:
+            transaction_list = await uow.user.get_all_relationship_elements(user_id=user['id'], row_name='transactions_list')
+            balance = 0
+            for elem in transaction_list:
+                if elem.type == TransactionType.DEPOSIT:
+                    balance += int(elem.amount)
+                elif elem.type == TransactionType.WITHDRAWAL:
+                    balance -= int(elem.amount)
+                else:
+                    raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=f'unexpected transaction type - {elem.type}')
+            return balance

@@ -26,9 +26,7 @@ class UserRepository(SQLAlchemyRepository):
         elem = await self.session.scalar(select(elem_model).filter_by(id=elem_id))
         user_relationship = getattr(user, row_name)
         if elem not in user_relationship:
-            return {
-                'warning' : 'relation does not exist'
-            }
+            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail='relation does not exist')
         user_relationship.remove(elem)
         return {'status': 'OK'}
 
@@ -37,3 +35,9 @@ class UserRepository(SQLAlchemyRepository):
         result = await self.session.execute(query)
         result = [row[0] for row in result.all()]
         return result
+
+    async def get_all_relationship_elements(self, user_id, row_name) -> dict:
+        user = await self.session.scalar(
+            select(self.model).filter_by(id=user_id).options(selectinload(getattr(User, row_name))))
+        user_relationship = getattr(user, row_name)
+        return user_relationship
