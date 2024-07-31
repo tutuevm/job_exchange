@@ -41,4 +41,4 @@ async def refresh_access_tiken(
         manager: UserManagerDependence,
         payload: UserPayloadDependence
 ):
-    return AuthService().refresh_auth_cuurent_user(manager=manager, payload=payload)
+    return await AuthService().refresh_auth_cuurent_user(manager=manager, payload=payload)

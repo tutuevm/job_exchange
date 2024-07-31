@@ -25,12 +25,10 @@ class JobService:
 
     async def delete_job_by_id(self, uow: InterfaceUnitOfWork, id: UUID):
         async with uow:
-            try:
-                status = await uow.job.delete_one(id=id)
-                return status
-            except IntegrityError:
-                return {'status': 'failed',
-                        'error': f'There are still references to id={id} in other database tables'}
+            status = await uow.job.delete_one(id=id)
+        return status
+
+
 
 
     async def get_all_responded_users(self, uow: InterfaceUnitOfWork, job_id: UUID):

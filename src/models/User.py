@@ -26,8 +26,8 @@ user_attribute_association = Table(
 
 user_job_association = Table(
     'user_job_association', Base.metadata,
-    Column('user_id', alchemy_uuid, ForeignKey('users.id'), primary_key=True),
-          Column('job_id', alchemy_uuid, ForeignKey('jobs.id'), primary_key=True),
+    Column('user_id', alchemy_uuid, ForeignKey('users.id', ondelete='CASCADE'), primary_key=True),
+          Column('job_id', alchemy_uuid, ForeignKey('jobs.id', ondelete='CASCADE'), primary_key=True),
           Column('response_status', Enum(JobResponseType), default=JobResponseType.SUBMITTED, nullable=False)
 )
 
@@ -39,13 +39,13 @@ class User(Base):
     login: Mapped[str] = mapped_column(String(50), unique=True, index=True)
     email: Mapped[str] = mapped_column(String(50), unique=True, index=True)
     hashed_password: Mapped[bytes] = mapped_column(LargeBinary)
-    notifications: Mapped[List["Notification"]] = relationship(back_populates="user")
     is_active : Mapped[bool] = mapped_column(default=True)
 
+    notifications: Mapped[List["Notification"]] = relationship(back_populates="user")
     attributes: Mapped[List["UserAttribute"]] = relationship("UserAttribute", secondary=user_attribute_association,
                                                              back_populates='user')
     created_jobs: Mapped[List["Job"]] = relationship(back_populates="owner")
-    assigned_jobs: Mapped[List["Job"]] = relationship("Job", secondary=user_job_association, back_populates='responded_users')
+    assigned_jobs: Mapped[List["Job"]] = relationship("Job", secondary=user_job_association, back_populates='responded_users', cascade="all, delete")
     transactions_list : Mapped[List["Transaction"]] = relationship()
 
 class UserAttribute(Base):
@@ -79,7 +79,7 @@ class Job(Base):
     organization_id: Mapped[UUID] = mapped_column(ForeignKey('organizations.id'))
     owner_id: Mapped[UUID] = mapped_column(ForeignKey("users.id"), index=True, nullable=False)
 
-    responded_users: Mapped[List["User"]] = relationship('User', secondary=user_job_association, back_populates='assigned_jobs')
+    responded_users: Mapped[List["User"]] = relationship('User', secondary=user_job_association, back_populates='assigned_jobs', cascade="all, delete")
     owner: Mapped["User"] = relationship(back_populates="created_jobs")
     organization: Mapped['Organization'] = relationship()
     action_type: Mapped['ActionType'] = relationship()

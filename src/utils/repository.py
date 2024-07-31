@@ -1,6 +1,7 @@
 from abc import ABC, abstractmethod
 from typing import List
 
+from fastapi import HTTPException, status
 from sqlalchemy import select, insert, update, delete
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -37,7 +38,7 @@ class SQLAlchemyRepository(AbstractRepository):
         return result
 
     async def add_one(self, data: dict) -> dict:
-        stmt = insert(self.model).values(**data).returning(self.model.id)
+        stmt = insert(self.model).values(**data)
         await self.session.execute(stmt)
         return {"status": "OK"}
 
@@ -51,7 +52,7 @@ class SQLAlchemyRepository(AbstractRepository):
     async def delete_one(self, **filter_by):
         elem = await self.session.scalar(select(self.model).filter_by(**filter_by))
         if not elem:
-            return {'status': 'failed', 'error': f'no elements with {filter_by} were found'}
+            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=f'element with {filter_by} does not exist')
         stmt = delete(self.model).filter_by(**filter_by)
         await self.session.execute(stmt)
         return {'status': f'elem with {filter_by} deleted'}

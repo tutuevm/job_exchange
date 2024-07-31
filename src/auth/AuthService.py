@@ -78,7 +78,7 @@ class AuthService:
             access_token=manager.return_jwt(
                 payload={
                     "type": 'access',
-                    "sub": payload['email'],
+                    "sub": payload['sub'],
                     "exp": datetime.now(UTC) + timedelta(minutes=settings.AUTH_SETTINGS.refresh_token_expire_days),
                 }
             ),
