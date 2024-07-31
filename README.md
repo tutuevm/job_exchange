@@ -9,8 +9,6 @@ Job Exchange is a web application designed to facilitate job postings and applic
 - [Configuration](#configuration)
 - [Environment Variables](#environment-variables)
 - [Testing](#testing)
-- [Contributing](#contributing)
-- [License](#license)
 
 ## Installation
 
