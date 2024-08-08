@@ -39,6 +39,14 @@ async def get_user_balance(
     result = await UserService().get_user_balance(uow=uow, user=current_user)
     return result
 
+@user_router.get('/get_jobs')
+async def get_user_jobs(
+        uow: UOWDependence,
+        current_user : dict = Depends(check_user)
+):
+    result = await UserService().get_user_assigned_jobs(uow=uow, user=current_user)
+    return result
+
 
 @user_router.put('/update_data')
 async def update_user_data(
