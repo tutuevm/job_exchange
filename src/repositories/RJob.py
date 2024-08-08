@@ -1,6 +1,9 @@
+from fastapi import HTTPException
 from sqlalchemy import select, and_
 from sqlalchemy.orm import selectinload, joinedload
 from uuid import UUID
+
+from starlette import status
 
 from src.schemas.JobSchema import JobFilter
 from src.utils.repository import SQLAlchemyRepository
@@ -14,10 +17,10 @@ class JobRepository(SQLAlchemyRepository):
     async def get_relationship(self, job_id: UUID, row_name: str):
         job = await self.session.scalar(
             select(self.model).filter_by(id=job_id).options(selectinload(getattr(Job, row_name))))
-        if job:
-            return getattr(job, row_name)
-        else:
-            return  {'warning' : 'nothing found'}
+        if not job:
+            HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail={'warning' : 'nothing found'})
+        return getattr(job, row_name)
+
 
 
 

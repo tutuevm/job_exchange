@@ -102,3 +102,7 @@ class UserService:
                 else:
                     raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=f'unexpected transaction type - {elem.type}')
             return balance
+
+    async def get_user_assigned_jobs(self,uow: InterfaceUnitOfWork, user):
+        result = await uow.user.get_all_relationship_elements(user_id=user['id'], row_name='assigned_jobs')
+        return result
