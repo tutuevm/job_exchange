@@ -1,12 +1,27 @@
 from uuid import UUID
 
 import pytest
+from httpx import AsyncClient
 
 from src.database import async_session_maker
 from src.models import Place
 from src.schemas.PlaceSchema import PlaceSchema
 from src.services.PlaceService import PlaceService
 from src.utils.UnitOfWork import UnitOfWork
+
+
+class TestPlaceRouter:
+    @pytest.mark.asyncio
+    async def test_get_all(self, ac: AsyncClient):
+        result = await ac.get("/place/get_all")
+        assert result.status_code == 200
+        assert type(result.json()) == list
+
+    @pytest.mark.asyncio
+    async def test_add_place(self, ac: AsyncClient):
+        result = await ac.post("/place/add_place", json={"title": "Казань"})
+        assert result.status_code == 200
+        assert result.json() == {"status": "OK"}
 
 
 class TestPlaceService:
