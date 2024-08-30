@@ -1,19 +1,25 @@
+import asyncio
+
 import pytest
-from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker
+import pytest_asyncio
 
-from src.config import settings
-from src.database import Base  # Импортируйте вашу базовую модель
-
-TEST_DB_URL = f"postgresql+asyncpg://{settings.DB_SETTINGS.DB_USER}:{settings.DB_SETTINGS.DB_PASSWORD}@{settings.DB_SETTINGS.DB_HOST}:{settings.DB_SETTINGS.DB_PORT}/{settings.DB_SETTINGS.TEST_DB_NAME}"
-engine_test = create_async_engine(TEST_DB_URL, echo=False)
-async_session_maker = async_sessionmaker(engine_test, expire_on_commit=False)
+from src.database import async_engine, Base
 
 
-@pytest.fixture(scope="session", autouse=True)
+@pytest_asyncio.fixture(autouse=True, scope="session")
 async def prepare_database():
-    async with engine_test.begin() as conn:
+    print("База создана")
+    async with async_engine.begin() as conn:
+        await conn.run_sync(Base.metadata.drop_all)
         await conn.run_sync(Base.metadata.create_all)
     yield
-    async with engine_test.begin() as conn:
+    print("База удалена")
+    async with async_engine.begin() as conn:
         await conn.run_sync(Base.metadata.drop_all)
 
+
+@pytest.fixture(scope="session")
+def event_loop():
+    loop = asyncio.get_event_loop_policy().new_event_loop()
+    yield loop
+    loop.close()
