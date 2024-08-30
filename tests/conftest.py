@@ -8,12 +8,10 @@ from src.database import async_engine, Base
 
 @pytest_asyncio.fixture(autouse=True, scope="session")
 async def prepare_database():
-    print("База создана")
     async with async_engine.begin() as conn:
         await conn.run_sync(Base.metadata.drop_all)
         await conn.run_sync(Base.metadata.create_all)
     yield
-    print("База удалена")
     async with async_engine.begin() as conn:
         await conn.run_sync(Base.metadata.drop_all)
 

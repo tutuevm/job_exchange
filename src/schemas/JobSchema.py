@@ -1,22 +1,24 @@
+from datetime import datetime, timedelta
+from enum import Enum
+from typing import List
+from uuid import UUID, uuid4
+
 from fastapi import Query
 from pydantic import BaseModel, Field
-from uuid import UUID, uuid4
-from datetime import datetime, timedelta
-from typing import Optional, List
-from enum import Enum
 
 
 class JobTypeSchema(Enum):
-    HOURLY_PAY = 'Почасовая оплата'
-    SALARY = 'Оплата по факту выаолнения работы'
+    HOURLY_PAY = "Почасовая оплата"
+    SALARY = "Оплата по факту выаолнения работы"
 
 
 class JobStatusSchema(Enum):
-    DRAFT = 'Черновик'
-    CRATED = 'Создана'
+    DRAFT = "Черновик"
+    CRATED = "Создана"
     ANDER_REVIEW = "На проверке"
     COMPLETED = "Выполнена"
     CLOSED = "Закрыта"
+
 
 class JobSchema(BaseModel):
     id: UUID = Field(default_factory=uuid4)
@@ -34,26 +36,21 @@ class JobSchema(BaseModel):
     owner_id: UUID
     organization_id: UUID
 
+
 class OrganizationSchema(BaseModel):
     id: UUID
     title: str
 
-    class Config:
-        orm_mode = True
 
 class ActionTypeSchema(BaseModel):
     id: UUID
     title: str
 
-    class Config:
-        orm_mode = True
 
 class CitySchema(BaseModel):
     id: UUID
     title: str
 
-    class Config:
-        orm_mode = True
 
 class JobResponseSchema(BaseModel):
     id: UUID
@@ -72,24 +69,32 @@ class JobResponseSchema(BaseModel):
     type_value: str
     status_value: str
 
+
 class JobFilter(BaseModel):
     owner_id: UUID | None = Field(Query(None))
-    location_id : List[UUID] | None = Field(Query(None))
+    location_id: List[UUID] | None = Field(Query(None))
     action_type_id: List[UUID] | None = Field(Query(None))
     price_min: int | None = Field(Query(None))
     price_max: int | None = Field(Query(None))
-    skip : int = 0
+    skip: int = 0
     limit: int = 10
 
 
-
-
 async def return_filter(
-        owner_id: UUID | None = None,
-        location_id : List[UUID] = Query(None),
-        action_type_id: List[UUID]  = Query(None),
-        price_min: int | None = Query(None),
-        price_max: int | None = Query(None),
-        skip: int = 0,
-        limit: int = 100):
-    return {"owner_id": owner_id, "location_id": location_id,'action_type_id':action_type_id,'price_min':price_min,'price_max':price_max, "skip": skip, "limit": limit}
+    owner_id: UUID | None = None,
+    location_id: List[UUID] = Query(None),
+    action_type_id: List[UUID] = Query(None),
+    price_min: int | None = Query(None),
+    price_max: int | None = Query(None),
+    skip: int = 0,
+    limit: int = 100,
+):
+    return {
+        "owner_id": owner_id,
+        "location_id": location_id,
+        "action_type_id": action_type_id,
+        "price_min": price_min,
+        "price_max": price_max,
+        "skip": skip,
+        "limit": limit,
+    }
