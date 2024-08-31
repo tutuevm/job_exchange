@@ -1,4 +1,4 @@
-from uuid import UUID
+from uuid import UUID, uuid4
 
 import pytest
 from httpx import AsyncClient
@@ -22,6 +22,15 @@ class TestPlaceRouter:
         result = await ac.post("/place/add_place", json={"title": "Казань"})
         assert result.status_code == 200
         assert result.json() == {"status": "OK"}
+
+    async def test_get_place_by_id(self, ac: AsyncClient):
+        uuid = uuid4()
+        async with async_session_maker() as session:
+            new_record = Place(id=uuid, title="Киров")
+            session.add(new_record)
+            await session.commit()
+        result = await ac.post("/place/get_place_by_id", json={"id": str(uuid)})
+        assert result.json()[0]["title"] == "Киров"
 
 
 class TestPlaceService:
