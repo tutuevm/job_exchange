@@ -9,4 +9,6 @@ UOWDependence = Annotated[InterfaceUnitOfWork, Depends(UnitOfWork)]
 
 UserManagerDependence = Annotated[IUserManager, Depends(UserManager)]
 
-UserPayloadDependence = Annotated[Dict, Depends(UserManager().get_current_auth_user_payload)]
+UserPayloadDependence = Annotated[
+    Dict, Depends(UserManager().get_current_auth_user_payload)
+]

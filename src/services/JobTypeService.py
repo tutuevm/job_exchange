@@ -5,9 +5,7 @@ from src.utils.UnitOfWork import InterfaceUnitOfWork
 
 class JobTypeService:
     async def create_job_type(self, uow: InterfaceUnitOfWork, title: str):
-        data = {
-            'title': title
-        }
+        data = {"title": title}
         async with uow:
             status = await uow.job_type.add_one(data)
         return status

@@ -1,5 +1,5 @@
-from src.utils.repository import SQLAlchemyRepository
 from src.models.Organization import Organization
+from src.utils.repository import SQLAlchemyRepository
 
 
 class OrganizationRepository(SQLAlchemyRepository):
