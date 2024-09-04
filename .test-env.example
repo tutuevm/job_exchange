@@ -1,0 +1,10 @@
+API_TITLE = Job exchange app
+API_DESCRIPTION = This application is designed for job seekers
+API_VERSION = 0.0.1
+
+
+DATABASE_USER =
+DATABASE_PASSWORD =
+DB_HOST =
+DB_PORT =
+DB_NAME =

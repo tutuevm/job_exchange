@@ -2,8 +2,8 @@ from uuid import UUID, uuid4
 
 import pytest
 from httpx import AsyncClient
-from src.models import Place
 
+from src.Place.models import Place
 from src.Place.schemas import PlaceSchema
 from src.Place.services import PlaceService
 from src.database import async_session_maker
