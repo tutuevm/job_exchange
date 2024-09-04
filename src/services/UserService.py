@@ -3,7 +3,8 @@ from uuid import UUID
 from fastapi import HTTPException, status
 
 from src.auth.UserManager import UserManager
-from src.models.User import UserAttribute, Job
+from src.models.Job import Job
+from src.models.User import UserAttribute
 from src.schemas.TransactionSchema import TransactionType
 from src.schemas.UserSchema import UserSchema, UserInfo
 from src.utils.UnitOfWork import InterfaceUnitOfWork

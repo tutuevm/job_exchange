@@ -6,7 +6,6 @@ from sqlalchemy import String, func, ForeignKey
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from src.database import Base
-from src.models.User import User
 
 if TYPE_CHECKING:
     from src.models.User import User

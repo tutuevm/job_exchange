@@ -5,7 +5,7 @@ from sqlalchemy import select, and_
 from sqlalchemy.orm import selectinload, joinedload
 from starlette import status
 
-from src.models.User import Job
+from src.models.Job import Job
 from src.schemas.JobSchema import JobFilter
 from src.utils.repository import SQLAlchemyRepository
 
