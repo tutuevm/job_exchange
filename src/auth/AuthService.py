@@ -3,10 +3,10 @@ from datetime import datetime, UTC, timedelta
 from fastapi import HTTPException, status
 from jwt import ExpiredSignatureError, InvalidSignatureError
 
+from src.User.models import User
 from src.auth.UserLoginShema import UserLoginSchema, TokenInfo
 from src.auth.UserManager import IUserManager
 from src.config import settings
-from src.models.User import User
 from src.utils.UnitOfWork import InterfaceUnitOfWork
 
 

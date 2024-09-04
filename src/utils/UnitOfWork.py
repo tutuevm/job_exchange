@@ -1,14 +1,13 @@
 from typing import Type
 
+from src.ActionType.repository import ActionTypeRepository
+from src.Job.repository import JobRepository
+from src.Organization.repository import OrganizationRepository
+from src.Place.repository import PlaceRepository
+from src.Transaction.repository import TransactionRepository
+from src.User.repository import UserRepository, UserJobAssociationRepository
+from src.UserAttribute.repository import UserAttributeRepository
 from src.database import async_session_maker
-from src.repositories.RActionType import ActionTypeRepository
-from src.repositories.RJob import JobRepository
-from src.repositories.RJobUserAssociation import UserJobAssociationRepository
-from src.repositories.ROrganization import OrganizationRepository
-from src.repositories.RPlace import PlaceRepository
-from src.repositories.RTransaction import TransactionRepository
-from src.repositories.RUser import UserRepository
-from src.repositories.UserAttributeRepository import UserAttributeRepository
 
 
 class InterfaceUnitOfWork:
