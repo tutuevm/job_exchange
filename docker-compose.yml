@@ -1,0 +1,31 @@
+networks:
+  dev:
+
+
+services:
+  postgresql:
+    image: postgres:14
+    container_name: postgres_db
+    environment:
+      POSTGRES_DB: ${DB_NAME}
+      POSTGRES_USER: ${DATABASE_USER}
+      POSTGRES_PASSWORD: ${DATABASE_PASSWORD}
+    ports:
+      - "5432:5432"
+    networks:
+      - dev
+    env_file: 
+      - .env
+
+  api:
+    build:
+      context: .
+    networks:
+      - dev
+    ports:
+      - "8010:8010"
+    depends_on:
+      - postgresql
+    command: bash -c "cd .. && alembic upgrade head && cd /job_exchange/src && python -m main"
+    env_file: 
+      - .env

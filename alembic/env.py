@@ -6,20 +6,20 @@ from alembic import context
 from sqlalchemy import engine_from_config
 from sqlalchemy import pool
 
-sys.path.append(os.path.join(sys.path[0], 'src'))
+sys.path.append(os.path.join(sys.path[0], "src"))
 
 from src.config import settings
+
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
 config = context.config
 
 section = config.config_ini_section
-config.set_section_option(section, "DB_HOST", settings.DB_SETTINGS.DB_HOST)
-config.set_section_option(section, "DB_NAME", settings.DB_SETTINGS.DB_NAME)
-config.set_section_option(section, "DB_PASS", settings.DB_SETTINGS.DB_PASSWORD)
-config.set_section_option(section, "DB_PORT", settings.DB_SETTINGS.DB_PORT)
-config.set_section_option(section, "DB_USER", settings.DB_SETTINGS.DB_USER)
-
+config.set_section_option(section, "DB_HOST", str(settings.DB_SETTINGS.DB_HOST))
+config.set_section_option(section, "DB_NAME", str(settings.DB_SETTINGS.DB_NAME))
+config.set_section_option(section, "DB_PASS", str(settings.DB_SETTINGS.DB_PASSWORD))
+config.set_section_option(section, "DB_PORT", str(settings.DB_SETTINGS.DB_PORT))
+config.set_section_option(section, "DB_USER", str(settings.DB_SETTINGS.DB_USER))
 
 # Interpret the config file for Python logging.
 # This line sets up loggers basically.
@@ -38,7 +38,7 @@ target_metadata = Base.metadata
 # can be acquired:
 # my_important_option = config.get_main_option("my_important_option")
 # ... etc.
-#config.set_main_option("sqlalchemy.url", src.database.DB_URL)
+# config.set_main_option("sqlalchemy.url", src.database.DB_URL)
 
 
 def run_migrations_offline() -> None:
@@ -79,14 +79,10 @@ def run_migrations_online() -> None:
     )
 
     with connectable.connect() as connection:
-        context.configure(
-            connection=connection, target_metadata=target_metadata
-        )
+        context.configure(connection=connection, target_metadata=target_metadata)
 
         with context.begin_transaction():
             context.run_migrations()
-
-
 
 
 if context.is_offline_mode():

@@ -27,13 +27,13 @@ class DataBaseSettings(BaseModel):
     DB_PASSWORD: str = os.environ.get("DATABASE_PASSWORD")
     DB_NAME: str = os.environ.get("DB_NAME")
     DB_HOST: str = os.environ.get("DB_HOST")
-    DB_PORT: str = os.environ.get("DB_PORT")
+    DB_PORT: int = os.environ.get("DB_PORT")
 
 
 class Settings(BaseSettings):
-    API_TITLE: str = os.environ.get("API_TITLE")
-    API_DESCRIPTION: str = os.environ.get("API_DESCRIPTION")
-    API_VERSION: str = os.environ.get("API_VERSION")
+    API_TITLE: str = "Job exchange app"
+    API_DESCRIPTION: str = "This application is designed for job seekers"
+    API_VERSION: str = "0.0.1"
     DB_SETTINGS: DataBaseSettings = DataBaseSettings()
     SSL_Settings: SSLSettings = SSLSettings()
     AUTH_SETTINGS: AuthSettings = AuthSettings()

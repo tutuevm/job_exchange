@@ -1,7 +1,7 @@
 import uvicorn
 from fastapi import FastAPI
 from starlette.middleware.cors import CORSMiddleware
-
+from src.database import DB_URL
 from src.config import settings
 from src.utils.routers import router_list
 
@@ -28,6 +28,7 @@ for router in router_list:
 
 @app.get('/get_status')
 def test():
+    print(DB_URL)
     return {'message': 'OK'}
 
 

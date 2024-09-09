@@ -34,7 +34,7 @@ async def check_user(uow: UOWDependence, payload: UserPayloadDependence):
 @auth_router.post(
     "/refresh_access_token", response_model=TokenInfo, response_model_exclude_none=True
 )
-async def refresh_access_tiken(
+async def refresh_access_token(
     manager: UserManagerDependence, payload: UserPayloadDependence
 ):
     return await AuthService().refresh_auth_cuurent_user(

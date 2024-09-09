@@ -10,6 +10,7 @@ RUN pip install poetry
 ENV POETRY_VIRTUALENVS_CREATE=false
 ENV PYTHONPATH=/job_exchange
 
+
 COPY poetry.lock pyproject.toml /job_exchange/
 
 
@@ -22,7 +23,6 @@ RUN mkdir -p /job_exchange/ssl
 RUN openssl genrsa -out /job_exchange/ssl/jwt-private.pem 2048 && \
     openssl rsa -in /job_exchange/ssl/jwt-private.pem -outform PEM -pubout -out /job_exchange/jwt-public.pem
 
+
 WORKDIR /job_exchange/src
 
-
-CMD ["python", "-m", "main"]
