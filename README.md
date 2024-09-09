@@ -25,7 +25,7 @@ SQLAlchemy, it allows users to create job listings, apply for jobs, and manage t
 
 2. Running the Application in container:
     ```bash
-      docker compose up --bild
+      docker compose up --build
     ```
 
 ## API Documentation
