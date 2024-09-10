@@ -1,3 +1,5 @@
+version: '3.8'
+
 networks:
   dev:
 
@@ -12,9 +14,11 @@ services:
       POSTGRES_PASSWORD: ${DATABASE_PASSWORD}
     ports:
       - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
     networks:
       - dev
-    env_file: 
+    env_file:
       - .env
 
   api:
@@ -23,9 +27,13 @@ services:
     networks:
       - dev
     ports:
-      - "8010:8010"
+      - "8000:8010"
     depends_on:
       - postgresql
     command: bash -c "cd .. && alembic upgrade head && cd /job_exchange/src && python -m main"
-    env_file: 
+    env_file:
       - .env
+        
+
+volumes:
+  postgres_data:

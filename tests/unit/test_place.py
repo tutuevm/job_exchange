@@ -36,10 +36,12 @@ class TestPlaceRouter:
 class TestPlaceService:
 
     @pytest.mark.asyncio
-    async def test_add_place(self):
+    async def test_add_place(self, mocker):
+        mocked_add = mocker.patch("uow.place.find_by_filter(id=id)")
+        mocked_add.return_value.json.return_value = {"status": "mock"}
         place = PlaceSchema(id="93169ada-d374-4152-addb-322412e335a3", title="Ижевск")
         result = await PlaceService().add_place(UnitOfWork(), place=place)
-        assert result == {"status": "OK"}
+        assert result == {"status": "mock"}
 
     @pytest.mark.asyncio
     async def test_get_place_by_id(self):
