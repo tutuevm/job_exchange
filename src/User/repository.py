@@ -4,6 +4,7 @@ from fastapi import HTTPException, status
 from sqlalchemy import select, or_, Row, and_, update
 from sqlalchemy.orm import selectinload
 
+from src.Job.models import Job
 from src.User.models import User, user_job_association
 from src.utils.repository import SQLAlchemyRepository
 
@@ -61,6 +62,16 @@ class UserRepository(SQLAlchemyRepository):
         )
         user_relationship = getattr(user, row_name)
         return user_relationship
+
+    async def get_user_assigned_jobs_with_status(self, user_id):
+        results = await self.session.execute(
+            select(Job, user_job_association.c.response_status)
+            .join(user_job_association, Job.id == user_job_association.c.job_id)
+            .filter(user_job_association.c.user_id == user_id)
+        )
+
+        jobs = results.all()
+        return [{"job": row[0], "status": row[1]} for row in jobs]
 
 
 class UserJobAssociationRepository(SQLAlchemyRepository):

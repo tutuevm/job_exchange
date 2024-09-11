@@ -14,7 +14,7 @@ class JobTypeSchema(Enum):
 
 class JobStatusSchema(Enum):
     DRAFT = "Черновик"
-    CRATED = "Создана"
+    CREATED = "Создана"
     ANDER_REVIEW = "На проверке"
     COMPLETED = "Выполнена"
     CLOSED = "Закрыта"

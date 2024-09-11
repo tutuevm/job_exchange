@@ -54,7 +54,7 @@ class JobService:
             )
         return result
 
-    async def set_compete_status_job(
+    async def accept_and_close_job(
         self, uow: InterfaceUnitOfWork, user_id: UUID, job_id: UUID, current_user
     ):
         async with uow:
@@ -75,34 +75,11 @@ class JobService:
                     status_code=status.HTTP_400_BAD_REQUEST,
                     detail=f"only the owner of the work can change its status",
                 )
-            if job[0].status_value != JobStatusSchema.CRATED:
-                raise HTTPException(
-                    status_code=status.HTTP_400_BAD_REQUEST,
-                    detail=f"Invalid response status. Expected - {JobStatusSchema.CRATED.name}, arrived - {job[0].status_value}",
-                )
             if job_response.response_status != JobResponseType.ACCEPTED:
                 raise HTTPException(
                     status_code=status.HTTP_400_BAD_REQUEST,
                     detail=f"Invalid response status. Expected - {JobResponseType.ACCEPTED}, arrived - {job_response.response_status.value}",
                 )
-            await uow.job.update_value(job[0], status_value=JobStatusSchema.COMPLETED)
-
-    async def accept_and_close_job(
-        self, uow: InterfaceUnitOfWork, job_id: UUID, current_user
-    ):
-        async with uow:
-            job = await uow.job.find_by_filter(id=job_id)
-            if job[0].status_value != JobStatusSchema.COMPLETED.name:
-                raise HTTPException(
-                    status_code=status.HTTP_400_BAD_REQUEST,
-                    detail=f"Invalid job status. Expected - {JobStatusSchema.COMPLETED.name}",
-                )
-            result = await uow.job.update_value(
-                elem=job, status_id=JobStatusSchema.CLOSED.name
+            await uow.job.update_value(
+                job[0], status_value=JobStatusSchema.CLOSED.value
             )
-            if job[0].owner_id != current_user["id"]:
-                raise HTTPException(
-                    status_code=status.HTTP_400_BAD_REQUEST,
-                    detail=f"only the owner of the work can change its status",
-                )
-        return result

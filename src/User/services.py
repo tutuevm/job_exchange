@@ -1,6 +1,5 @@
-from uuid import UUID
-
 from fastapi import HTTPException, status
+from uuid import UUID
 
 from src.Job.models import Job
 from src.Transaction.schemas import TransactionType
@@ -144,7 +143,6 @@ class UserService:
             return balance
 
     async def get_user_assigned_jobs(self, uow: InterfaceUnitOfWork, user):
-        result = await uow.user.get_all_relationship_elements(
-            user_id=user["id"], row_name="assigned_jobs"
-        )
+        result = await uow.user.get_user_assigned_jobs_with_status(
+            user_id=user["id"])
         return result
