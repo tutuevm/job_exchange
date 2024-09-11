@@ -11,7 +11,7 @@ app = FastAPI(
     description=settings.API_DESCRIPTION,
     version=settings.API_VERSION,
     redoc_url=None,
-    root_path="/api",
+    # root_path="/api",
 )
 
 
