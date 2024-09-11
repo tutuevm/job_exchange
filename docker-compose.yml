@@ -21,7 +21,7 @@ services:
     env_file:
       - .env
 
-  backend:
+  api:
     build:
       context: .
     networks:
@@ -33,26 +33,6 @@ services:
     command: bash -c "cd .. && alembic upgrade head && cd /job_exchange/src && python -m main"
     env_file:
       - .env
-
-  frontend:
-    build:
-      context: ../myBoloto/.
-    networks:
-      - dev
-    ports:
-      - "3000:3000"
-
-  nginx:
-    image: nginx:stable-alpine
-    ports:
-      - "8100:8100"
-    volumes:
-      - './nginx.conf:/etc/nginx/nginx.conf'
-    depends_on:
-      - backend
-      - frontend
-    networks:
-      - dev
 
 
 volumes:
