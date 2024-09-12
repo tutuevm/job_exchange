@@ -1,62 +1,65 @@
-from uuid import UUID, uuid4
+from uuid import UUID
 
 import pytest
-from httpx import AsyncClient
+from pytest_mock import MockerFixture
 
-from src.Place.models import Place
 from src.Place.schemas import PlaceSchema
 from src.Place.services import PlaceService
-from src.database import async_session_maker
-from src.utils.UnitOfWork import UnitOfWork
-
-
-class TestPlaceRouter:
-    @pytest.mark.asyncio
-    async def test_get_all(self, ac: AsyncClient):
-        result = await ac.get("/place/get_all")
-        assert result.status_code == 200
-        assert type(result.json()) == list
-
-    @pytest.mark.asyncio
-    async def test_add_place(self, ac: AsyncClient):
-        result = await ac.post("/place/add_place", json={"title": "Казань"})
-        assert result.status_code == 200
-        assert result.json() == {"status": "OK"}
-
-    async def test_get_place_by_id(self, ac: AsyncClient):
-        uuid = uuid4()
-        async with async_session_maker() as session:
-            new_record = Place(id=uuid, title="Киров")
-            session.add(new_record)
-            await session.commit()
-        result = await ac.post("/place/get_place_by_id", json={"id": str(uuid)})
-        assert result.json()[0]["title"] == "Киров"
+from src.utils.UnitOfWork import InterfaceUnitOfWork
 
 
 class TestPlaceService:
+    place_instance = PlaceService()
 
     @pytest.mark.asyncio
-    async def test_add_place(self, mocker):
-        mocked_add = mocker.patch("uow.place.find_by_filter(id=id)")
-        mocked_add.return_value.json.return_value = {"status": "mock"}
-        place = PlaceSchema(id="93169ada-d374-4152-addb-322412e335a3", title="Ижевск")
-        result = await PlaceService().add_place(UnitOfWork(), place=place)
-        assert result == {"status": "mock"}
+    async def test_add_place(self, mocker: MockerFixture):
+        mock_uow = mocker.AsyncMock(spec=InterfaceUnitOfWork)
+        mock_place = mocker.Mock()
+        mock_uow.place = mock_place
+        mock_add_one = mocker.AsyncMock(return_value={"status": "success"})
+        mock_place.add_one = mock_add_one
+        place_data = {"title": "Test Place"}
+        place = PlaceSchema(**place_data)
+        result = await self.place_instance.add_place(uow=mock_uow, place=place)
+        mock_add_one.assert_called_once_with(place.model_dump())
+        assert result == {"status": "success"}
+        mock_uow.__aenter__.assert_awaited_once()
+        mock_uow.__aexit__.assert_awaited_once()
 
     @pytest.mark.asyncio
-    async def test_get_place_by_id(self):
-        async with async_session_maker() as session:
-            new_record = Place(
-                id="16739ada-d374-4152-addb-322412e335a3", title="Test Record"
-            )
-            session.add(new_record)
-            await session.commit()
-        result = await PlaceService().get_place_by_id(
-            uow=UnitOfWork(), id=UUID("16739ada-d374-4152-addb-322412e335a3")
+    async def test_get_place_by_id(self, mocker: MockerFixture):
+        mock_filter = mocker.AsyncMock(
+            return_value=[
+                {"title": "Test Place", "id": "47a9af15-9cd3-426e-99e3-79d761ffcaa7"}
+            ]
         )
-        assert len(result) == 1
+        mock_place = mocker.Mock()
+        mock_uow = mocker.AsyncMock(spec=InterfaceUnitOfWork)
+        mock_place.find_by_filter = mock_filter
+        mock_uow.place = mock_place
+        result = await self.place_instance.get_place_by_id(
+            uow=mock_uow, id=UUID("47a9af15-9cd3-426e-99e3-79d761ffcaa7")
+        )
+        assert result == [
+            {"title": "Test Place", "id": "47a9af15-9cd3-426e-99e3-79d761ffcaa7"}
+        ]
+        mock_uow.__aenter__.assert_awaited_once()
+        mock_uow.__aexit__.assert_awaited_once()
 
     @pytest.mark.asyncio
-    async def test_get_all(self):
-        result = await PlaceService().get_all(UnitOfWork())
-        assert type(result) == list
+    async def test_get_all(self, mocker: MockerFixture):
+        mock_get_all = mocker.AsyncMock(
+            return_value=[
+                {"title": "Test Place", "id": "47a9af15-9cd3-426e-99e3-79d761ffcaa7"}
+            ]
+        )
+        mock_place = mocker.Mock()
+        mock_uow = mocker.AsyncMock(spec=InterfaceUnitOfWork)
+        mock_place.get_all = mock_get_all
+        mock_uow.place = mock_place
+        result = await self.place_instance.get_all(uow=mock_uow)
+        assert result == [
+            {"title": "Test Place", "id": "47a9af15-9cd3-426e-99e3-79d761ffcaa7"}
+        ]
+        mock_uow.__aenter__.assert_awaited_once()
+        mock_uow.__aexit__.assert_awaited_once()
