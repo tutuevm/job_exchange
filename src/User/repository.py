@@ -74,7 +74,7 @@ class UserRepository(SQLAlchemyRepository):
         jobs = results.all()
         return [{"job": row[0], "status": row[1]} for row in jobs]
 
-    async def test(self, owner_id):
+    async def get_user_created_jobs_with_responded_user(self, owner_id):
         user_job_alias = aliased(user_job_association)
         stmt = (
             select(
