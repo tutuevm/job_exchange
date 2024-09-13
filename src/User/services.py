@@ -149,3 +149,8 @@ class UserService:
                 user_id=user["id"]
             )
         return result
+
+    async def get_user_created_job(self, uow: InterfaceUnitOfWork, user):
+        async with uow:
+            jobs = await uow.user.test(user["id"])
+        return jobs

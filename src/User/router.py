@@ -38,6 +38,14 @@ async def get_user_jobs(uow: UOWDependence, current_user: dict = Depends(check_u
     return result
 
 
+@user_router.get("/get_created_jobs")
+async def get_created_jobs(
+    uow: UOWDependence, current_user: dict = Depends(check_user)
+):
+    result = await UserService().get_user_created_job(uow=uow, user=current_user)
+    return result
+
+
 @user_router.put("/update_data")
 async def update_user_data(uow: UOWDependence, user_id: UUID, update_data: dict):
     result = await UserService().update_user_data(
