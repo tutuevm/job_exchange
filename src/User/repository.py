@@ -5,7 +5,6 @@ from sqlalchemy import select, or_, Row, and_, update
 from sqlalchemy.orm import selectinload, aliased, joinedload
 
 from src.Job.models import Job
-from src.Job.schemas import JobResponseType
 from src.User.models import User, user_job_association
 from src.utils.repository import SQLAlchemyRepository
 
@@ -88,10 +87,6 @@ class UserRepository(SQLAlchemyRepository):
             .outerjoin(user_job_alias, Job.id == user_job_alias.c.job_id)
             .outerjoin(User, User.id == user_job_alias.c.user_id)
             .filter(Job.owner_id == owner_id)
-            .filter(
-                (user_job_alias.c.response_status == JobResponseType.ACCEPTED)
-                | (user_job_alias.c.response_status.is_(None))
-            )
             .options(joinedload(Job.action_type))
             .options(joinedload(Job.city))
             .options(joinedload(Job.organization))
