@@ -2,7 +2,7 @@ from uuid import UUID
 
 from fastapi import HTTPException, status
 from sqlalchemy import select, or_, Row, and_, update
-from sqlalchemy.orm import selectinload, aliased
+from sqlalchemy.orm import selectinload, aliased, joinedload
 
 from src.Job.models import Job
 from src.Job.schemas import JobResponseType
@@ -69,6 +69,9 @@ class UserRepository(SQLAlchemyRepository):
             select(Job, user_job_association.c.response_status)
             .join(user_job_association, Job.id == user_job_association.c.job_id)
             .filter(user_job_association.c.user_id == user_id)
+            .options(joinedload(Job.action_type))
+            .options(joinedload(Job.city))
+            .options(joinedload(Job.organization))
         )
 
         jobs = results.all()
@@ -89,6 +92,9 @@ class UserRepository(SQLAlchemyRepository):
                 (user_job_alias.c.response_status == JobResponseType.ACCEPTED)
                 | (user_job_alias.c.response_status.is_(None))
             )
+            .options(joinedload(Job.action_type))
+            .options(joinedload(Job.city))
+            .options(joinedload(Job.organization))
         )
 
         result = await self.session.execute(stmt)
