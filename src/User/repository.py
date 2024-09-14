@@ -92,7 +92,22 @@ class UserRepository(SQLAlchemyRepository):
             .options(joinedload(Job.organization))
         )
 
-        result = await self.session.execute(stmt)
+        query = (
+            select(Job, user_job_association.c.user_id, User.full_name)
+            .outerjoin(
+                user_job_association,
+                and_(
+                    user_job_association.c.job_id == Job.id,
+                    user_job_association.c.response_status == "ACCEPTED",
+                ),
+            )
+            .outerjoin(User, User.id == user_job_association.c.user_id)
+            .where(Job.owner_id == owner_id)
+            .options(joinedload(Job.action_type))
+            .options(joinedload(Job.city))
+            .options(joinedload(Job.organization))
+        )
+        result = await self.session.execute(query)
         return [
             {"job": row[0], "responded_user": {"id": row[1], "full_name": row[2]}}
             for row in result.all()
