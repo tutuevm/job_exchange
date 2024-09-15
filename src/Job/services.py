@@ -62,14 +62,6 @@ class JobService:
                 user_id=user_id, job_id=job_id
             )
             job = await uow.job.find_by_filter(id=job_id)
-            await uow.transaction.add_one(
-                {
-                    "user_id": user_id,
-                    "amount": job[0].price,
-                    "type": TransactionType.DEPOSIT,
-                    "status": TransactionStatus.COMPLETED,
-                }
-            )
             if job[0].owner_id != current_user["id"]:
                 raise HTTPException(
                     status_code=status.HTTP_400_BAD_REQUEST,
@@ -80,6 +72,12 @@ class JobService:
                     status_code=status.HTTP_400_BAD_REQUEST,
                     detail=f"Invalid response status. Expected - {JobResponseType.ACCEPTED}, arrived - {job_response.response_status.value}",
                 )
-            await uow.job.update_value(
-                job[0], status_value=JobStatusSchema.CLOSED.value
+            await uow.job.update_value(job[0], status_value=JobStatusSchema.CLOSED)
+            await uow.transaction.add_one(
+                {
+                    "user_id": user_id,
+                    "amount": job[0].price,
+                    "type": TransactionType.DEPOSIT,
+                    "status": TransactionStatus.COMPLETED,
+                }
             )
