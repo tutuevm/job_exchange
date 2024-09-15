@@ -32,9 +32,19 @@ async def get_user_balance(
     return result
 
 
-@user_router.get("/get_jobs")
-async def get_user_jobs(uow: UOWDependence, current_user: dict = Depends(check_user)):
+@user_router.get("/get_user_assigned_jobs")
+async def get_user_assigned_jobs(
+    uow: UOWDependence, current_user: dict = Depends(check_user)
+):
     result = await UserService().get_user_assigned_jobs(uow=uow, user=current_user)
+    return result
+
+
+@user_router.get("/get_created_jobs")
+async def get_created_jobs(
+    uow: UOWDependence, current_user: dict = Depends(check_user)
+):
+    result = await UserService().get_user_created_job(uow=uow, user=current_user)
     return result
 
 

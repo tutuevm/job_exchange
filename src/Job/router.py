@@ -46,21 +46,11 @@ async def accept_responded_user(
     return result
 
 
-@job_router.put("/set_compete_status_job")
-async def set_compete_status_job(
-    uow: UOWDependence, user_id: UUID, job_id: UUID, current_user=Depends(check_user)
-):
-    result = await JobService().set_compete_status_job(
-        uow=uow, user_id=user_id, job_id=job_id, current_user=current_user
-    )
-    return result
-
-
 @job_router.put("/accept_and_close_job")
 async def accept_and_close_job(
-    uow: UOWDependence, job_id: UUID, current_user=Depends(check_user)
+    uow: UOWDependence, user_id: UUID, job_id: UUID, current_user=Depends(check_user)
 ):
     result = await JobService().accept_and_close_job(
-        uow=uow, job_id=job_id, current_user=current_user
+        uow=uow, user_id=user_id, job_id=job_id, current_user=current_user
     )
     return result

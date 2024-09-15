@@ -144,7 +144,13 @@ class UserService:
             return balance
 
     async def get_user_assigned_jobs(self, uow: InterfaceUnitOfWork, user):
-        result = await uow.user.get_all_relationship_elements(
-            user_id=user["id"], row_name="assigned_jobs"
-        )
+        async with uow:
+            result = await uow.user.get_user_assigned_jobs_with_status(
+                user_id=user["id"]
+            )
         return result
+
+    async def get_user_created_job(self, uow: InterfaceUnitOfWork, user):
+        async with uow:
+            jobs = await uow.user.get_user_created_jobs_with_responded_user(user["id"])
+        return jobs

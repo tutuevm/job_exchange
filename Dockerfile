@@ -19,7 +19,7 @@ RUN poetry install --no-dev
 
 COPY . /job_exchange
 
-RUN mkdir -p /job_exchange/ssl
+RUN mkdir -p /job_exchange/crt
 RUN openssl genrsa -out /job_exchange/crt/jwt-private.pem 2048 && \
     openssl rsa -in /job_exchange/crt/jwt-private.pem -outform PEM -pubout -out /job_exchange/crt/jwt-public.pem
 

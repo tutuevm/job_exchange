@@ -2,8 +2,9 @@ from uuid import UUID
 
 from fastapi import HTTPException, status
 from sqlalchemy import select, or_, Row, and_, update
-from sqlalchemy.orm import selectinload
+from sqlalchemy.orm import selectinload, aliased, joinedload
 
+from src.Job.models import Job
 from src.User.models import User, user_job_association
 from src.utils.repository import SQLAlchemyRepository
 
@@ -61,6 +62,56 @@ class UserRepository(SQLAlchemyRepository):
         )
         user_relationship = getattr(user, row_name)
         return user_relationship
+
+    async def get_user_assigned_jobs_with_status(self, user_id: UUID):
+        results = await self.session.execute(
+            select(Job, user_job_association.c.response_status)
+            .join(user_job_association, Job.id == user_job_association.c.job_id)
+            .filter(user_job_association.c.user_id == user_id)
+            .options(joinedload(Job.action_type))
+            .options(joinedload(Job.city))
+            .options(joinedload(Job.organization))
+        )
+
+        jobs = results.all()
+        return [{"job": row[0], "status": row[1]} for row in jobs]
+
+    async def get_user_created_jobs_with_responded_user(self, owner_id):
+        user_job_alias = aliased(user_job_association)
+        stmt = (
+            select(
+                Job,
+                User.id.label("responded_user_id"),
+                User.full_name.label("responded_user_full_name"),
+            )
+            .outerjoin(user_job_alias, Job.id == user_job_alias.c.job_id)
+            .outerjoin(User, User.id == user_job_alias.c.user_id)
+            .filter(Job.owner_id == owner_id)
+            .options(joinedload(Job.action_type))
+            .options(joinedload(Job.city))
+            .options(joinedload(Job.organization))
+        )
+
+        query = (
+            select(Job, user_job_association.c.user_id, User.full_name)
+            .outerjoin(
+                user_job_association,
+                and_(
+                    user_job_association.c.job_id == Job.id,
+                    user_job_association.c.response_status == "ACCEPTED",
+                ),
+            )
+            .outerjoin(User, User.id == user_job_association.c.user_id)
+            .where(Job.owner_id == owner_id)
+            .options(joinedload(Job.action_type))
+            .options(joinedload(Job.city))
+            .options(joinedload(Job.organization))
+        )
+        result = await self.session.execute(query)
+        return [
+            {"job": row[0], "responded_user": {"id": row[1], "full_name": row[2]}}
+            for row in result.all()
+        ]
 
 
 class UserJobAssociationRepository(SQLAlchemyRepository):

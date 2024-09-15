@@ -11,6 +11,7 @@ app = FastAPI(
     description=settings.API_DESCRIPTION,
     version=settings.API_VERSION,
     redoc_url=None,
+    root_path="/api",
 )
 
 
@@ -21,7 +22,8 @@ app.add_middleware(
         "http://127.0.0.1:3000",
         "http://10.14.113.135:3000",
         "http://0.0.0.0:3000",
-        "http://localhost:3000",
+        "http://localhost:8100",
+        "*",
     ],
     allow_credentials=True,
     allow_methods=["GET", "POST", "PUT", "DELETE"],
@@ -40,4 +42,4 @@ def test():
 
 
 if __name__ == "__main__":
-    uvicorn.run("main:app", host="0.0.0.0", port=8010)
+    uvicorn.run("main:app", host="0.0.0.0", port=8000)
