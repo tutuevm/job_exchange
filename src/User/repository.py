@@ -78,20 +78,6 @@ class UserRepository(SQLAlchemyRepository):
 
     async def get_user_created_jobs_with_responded_user(self, owner_id):
         user_job_alias = aliased(user_job_association)
-        stmt = (
-            select(
-                Job,
-                User.id.label("responded_user_id"),
-                User.full_name.label("responded_user_full_name"),
-            )
-            .outerjoin(user_job_alias, Job.id == user_job_alias.c.job_id)
-            .outerjoin(User, User.id == user_job_alias.c.user_id)
-            .filter(Job.owner_id == owner_id)
-            .options(joinedload(Job.action_type))
-            .options(joinedload(Job.city))
-            .options(joinedload(Job.organization))
-        )
-
         query = (
             select(Job, user_job_association.c.user_id, User.full_name)
             .outerjoin(

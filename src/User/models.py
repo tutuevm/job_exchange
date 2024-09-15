@@ -16,6 +16,7 @@ from src.Job.models import Job
 from src.Job.schemas import JobResponseType
 from src.Notification.models import Notification
 from src.Transaction.models import Transaction
+from src.UserData.models import UserData
 from src.database import Base
 
 user_attribute_association = Table(
@@ -73,3 +74,4 @@ class User(Base):
         cascade="all, delete",
     )
     transactions_list: Mapped[List["Transaction"]] = relationship()
+    user_data: Mapped["UserData"] = relationship(back_populates="user")
