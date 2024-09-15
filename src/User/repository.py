@@ -1,11 +1,12 @@
 from uuid import UUID
 
 from fastapi import HTTPException, status
-from sqlalchemy import select, or_, Row, and_, update
+from sqlalchemy import select, or_, Row, and_, update, insert
 from sqlalchemy.orm import selectinload, aliased, joinedload
 
 from src.Job.models import Job
 from src.User.models import User, user_job_association
+from src.User.schemas import UserSchema
 from src.utils.repository import SQLAlchemyRepository
 
 
@@ -47,6 +48,12 @@ class UserRepository(SQLAlchemyRepository):
             )
         user_relationship.remove(elem)
         return {"status": "OK"}
+
+    async def create_user(self, user_data):
+        stmt = insert(self.model).values(**user_data).returning(User.id)
+        result = await self.session.execute(stmt)
+        id = result.scalar_one()
+        return id
 
     async def get_users_by_different_fields(self, *filter_by):
         query = select(self.model).where(or_(*filter_by))

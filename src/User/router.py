@@ -56,7 +56,7 @@ async def update_user_data(uow: UOWDependence, user_id: UUID, update_data: dict)
     return result
 
 
-@user_router.post("/register_user", response_model=ResponseUserSchema)
+@user_router.post("/register_user")
 async def reg_user(uow: UOWDependence, user: UserSchema):
     try:
         status = await UserService().register_user(uow=uow, user=user)

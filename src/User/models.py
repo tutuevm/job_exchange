@@ -56,7 +56,6 @@ class User(Base):
     __tablename__ = "users"
 
     id: Mapped[UUID] = mapped_column(primary_key=True)
-    full_name: Mapped[str] = mapped_column(String(50))
     login: Mapped[str] = mapped_column(String(50), unique=True, index=True)
     email: Mapped[str] = mapped_column(String(50), unique=True, index=True)
     hashed_password: Mapped[bytes] = mapped_column(LargeBinary)

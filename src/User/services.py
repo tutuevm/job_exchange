@@ -6,6 +6,7 @@ from src.Job.models import Job
 from src.Transaction.schemas import TransactionType
 from src.User.schemas import UserSchema, UserInfo
 from src.UserAttribute.models import UserAttribute
+from src.UserData.schemas import UserDataCreatedSchema
 from src.auth.UserManager import UserManager
 from src.utils.UnitOfWork import InterfaceUnitOfWork
 
@@ -18,32 +19,36 @@ class UserService:
             place_title = await uow.user.get_all()
             return place_title
 
-    async def check_user_exist(self, uow: InterfaceUnitOfWork, **filter_by):
+    async def _check_user_exist(self, uow: InterfaceUnitOfWork, **filter_by):
         """Проверяет существование пользователя по соответсвию полей"""
         async with uow:
             result = await uow.user.find_by_filter(**filter_by)
         return len(result) > 0
 
-    async def register_user(
-        self, uow: InterfaceUnitOfWork, user: UserSchema
-    ) -> UserSchema:
+    async def register_user(self, uow: InterfaceUnitOfWork, user: UserSchema):
         """Регистрация нового пользователя"""
-        user_data = user.model_dump()
+        user = user.model_dump()
+        user_data = user["user_data"]
+        del user["user_data"]
+        print(user)
+        print(user_data)
         async with uow:
-            if await self.check_user_exist(uow=uow, email=user_data["email"]):
+            if await self._check_user_exist(uow=uow, email=user["email"]):
                 raise HTTPException(
                     status_code=401,
                     detail={"warning": "email address is already taken"},
                 )
-            if await self.check_user_exist(uow=uow, login=user_data["login"]):
+            if await self._check_user_exist(uow=uow, login=user["login"]):
                 raise HTTPException(
                     status_code=401, detail={"warning": "username is already taken"}
                 )
-            user_data["hashed_password"] = UserManager().hash_password(
-                user_data["hashed_password"]
+            user["hashed_password"] = UserManager().hash_password(
+                user["hashed_password"]
             )
-            await uow.user.add_one(user_data)
-        return user
+            created_user_id = await uow.user.create_user(user)
+            user_data["user_id"] = created_user_id
+            await uow.user_data.add_one(user_data)
+        return {"status": "OK"}
 
     async def append_user_attribute(
         self, uow: InterfaceUnitOfWork, user_id: UUID, attr_id: UUID
