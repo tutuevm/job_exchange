@@ -7,6 +7,7 @@ from src.Place.repository import PlaceRepository
 from src.Transaction.repository import TransactionRepository
 from src.User.repository import UserRepository, UserJobAssociationRepository
 from src.UserAttribute.repository import UserAttributeRepository
+from src.UserData.repository import UserDataRepository
 from src.database import async_session_maker
 
 
@@ -19,6 +20,7 @@ class InterfaceUnitOfWork:
     org: Type[OrganizationRepository]
     user_job_association: Type[UserJobAssociationRepository]
     transaction: Type[TransactionRepository]
+    user_data: Type[UserDataRepository]
 
     async def __aenter__(self): ...
 
@@ -44,6 +46,7 @@ class UnitOfWork:
         self.org = OrganizationRepository(self.session)
         self.user_job_association = UserJobAssociationRepository(self.session)
         self.transaction = TransactionRepository(self.session)
+        self.user_data = UserDataRepository(self.session)
 
     async def __aexit__(self, exc_type, exc_val, exc_tb):
         if exc_type:
