@@ -106,3 +106,4 @@ class JobResponseType(Enum):
     ACCEPTED = "Принят"
     REJECTED = "Отклонен"
     WITHDRAWN = "Отозван"
+    CLOSED = "Закрыта"

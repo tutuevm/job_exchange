@@ -65,7 +65,7 @@ class JobService:
             if job[0].owner_id != current_user["id"]:
                 raise HTTPException(
                     status_code=status.HTTP_400_BAD_REQUEST,
-                    detail=f"only the owner of the work can change its status",
+                    detail=f"only the owner of the work can change this status",
                 )
             if job_response.response_status != JobResponseType.ACCEPTED:
                 raise HTTPException(
