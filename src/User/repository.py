@@ -29,6 +29,7 @@ class UserRepository(SQLAlchemyRepository):
             select(self.model)
             .filter_by(id=user_id)
             .options(selectinload(getattr(User, row_name)))
+            .options(selectinload(User.user_data))
         )
         elem = await self.session.scalar(select(elem_model).filter_by(id=elem_id))
         user_relationship = getattr(user, row_name)
@@ -38,7 +39,7 @@ class UserRepository(SQLAlchemyRepository):
                 detail="relationship is already exist",
             )
         user_relationship.append(elem)
-        return user_relationship
+        return {"user": user, "elem": elem}
 
     async def remove_many_to_many_elem(
         self, user_id, elem_model, elem_id, row_name
@@ -95,7 +96,7 @@ class UserRepository(SQLAlchemyRepository):
     async def get_user_created_jobs_with_responded_user(self, owner_id):
         user_job_alias = aliased(user_job_association)
         query = (
-            select(Job, user_job_association.c.user_id, User.full_name)
+            select(Job, user_job_association.c.user_id, User.login)
             .outerjoin(
                 user_job_association,
                 and_(

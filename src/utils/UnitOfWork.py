@@ -2,6 +2,7 @@ from typing import Type
 
 from src.ActionType.repository import ActionTypeRepository
 from src.Job.repository import JobRepository
+from src.Notification.repository import NotificationsRepository
 from src.Organization.repository import OrganizationRepository
 from src.Place.repository import PlaceRepository
 from src.Transaction.repository import TransactionRepository
@@ -21,6 +22,7 @@ class InterfaceUnitOfWork:
     user_job_association: Type[UserJobAssociationRepository]
     transaction: Type[TransactionRepository]
     user_data: Type[UserDataRepository]
+    notification: Type[NotificationsRepository]
 
     async def __aenter__(self): ...
 
@@ -47,6 +49,7 @@ class UnitOfWork:
         self.user_job_association = UserJobAssociationRepository(self.session)
         self.transaction = TransactionRepository(self.session)
         self.user_data = UserDataRepository(self.session)
+        self.notification = NotificationsRepository(self.session)
 
     async def __aexit__(self, exc_type, exc_val, exc_tb):
         if exc_type:

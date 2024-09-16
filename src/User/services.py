@@ -122,6 +122,14 @@ class UserService:
                 elem_id=job_id,
                 row_name="assigned_jobs",
             )
+            user = elem["user"]
+            job = elem["elem"]
+            await uow.notification.add_one(
+                {
+                    "notification_data": f"Пользователь {user.user_data.surname} {user.user_data.name} откликнулся на вашу вакансию .Вы можете просмотреть его резюме и связаться с ним для дальнейшего общения.",
+                    "user_id": job.owner_id,
+                }
+            )
         return elem
 
     async def get_user_balance(self, uow: InterfaceUnitOfWork, user) -> int:

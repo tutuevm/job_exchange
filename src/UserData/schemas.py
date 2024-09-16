@@ -14,12 +14,12 @@ class UserDataCreatedSchema(BaseModel):
     city: str
     passport_data: str = Field(min_length=10, max_length=10)
     snils: str = Field(max_length=11, min_length=11)
-    medical_book: bool
-    is_self_employed: bool
-    work_experience: str = Field(default=None)
-    activity_type: str = Field(default=None)
-    contraindications: str = Field(default=None)
-    about: str = Field(default=None)
-    education: str = Field(default=None)
-    driver_license: str = None
+    medical_book: Optional[bool] = False
+    is_self_employed: Optional[bool] = False
+    work_experience: Optional[str] = None
+    activity_type: Optional[str] = None
+    contraindications: Optional[str] = None
+    about: Optional[str] = None
+    education: Optional[str] = None
+    driver_license: Optional[str] = None
     languages: Optional[str] = None
