@@ -1,3 +1,4 @@
+from typing import List
 from uuid import UUID
 
 from fastapi import HTTPException, status
@@ -12,6 +13,14 @@ from src.utils.repository import SQLAlchemyRepository
 
 class UserRepository(SQLAlchemyRepository):
     model = User
+
+    async def get_user_by_id(self, user_id):
+        query = (
+            select(User).where(User.id == user_id).options(selectinload(User.user_data))
+        )
+        result = await self.session.scalar(query)
+        print(result)
+        return result
 
     async def append_many_to_many_elem(
         self, user_id, elem_model, elem_id, row_name
@@ -49,13 +58,13 @@ class UserRepository(SQLAlchemyRepository):
         user_relationship.remove(elem)
         return {"status": "OK"}
 
-    async def create_user(self, user_data):
+    async def create_user(self, user_data) -> str:
         stmt = insert(self.model).values(**user_data).returning(User.id)
         result = await self.session.execute(stmt)
         id = result.scalar_one()
         return id
 
-    async def get_users_by_different_fields(self, *filter_by):
+    async def get_users_by_different_fields(self, *filter_by) -> List[User]:
         query = select(self.model).where(or_(*filter_by))
         result = await self.session.execute(query)
         result = [row[0] for row in result.all()]

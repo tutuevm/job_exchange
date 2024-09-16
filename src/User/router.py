@@ -2,7 +2,7 @@ from uuid import UUID
 
 from fastapi import APIRouter, HTTPException, Depends
 from starlette.responses import JSONResponse
-from typing_extensions import List
+from typing import List
 
 from src.User.schemas import UserSchema, UserInfo, ResponseUserSchema
 from src.User.services import UserService
@@ -12,13 +12,13 @@ from src.depends import UOWDependence
 user_router = APIRouter(prefix="/user_manager", tags=["user manager"])
 
 
-@user_router.get("/get_all", response_model=List[ResponseUserSchema])
+@user_router.get("/get_all")
 async def get_all_users(uow: UOWDependence):
     place_title = await UserService().get_all_users(uow=uow)
     return place_title
 
 
-@user_router.post("/get_user_by_id", response_model=UserInfo)
+@user_router.get("/get_user_by_id")
 async def get_user_by_id(uow: UOWDependence, user_id: UUID):
     result = await UserService().get_user_by_id(uow=uow, user_id=user_id)
     return result

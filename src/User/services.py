@@ -16,8 +16,9 @@ class UserService:
     async def get_all_users(self, uow: InterfaceUnitOfWork):
         """delete after testing"""
         async with uow:
-            place_title = await uow.user.get_all()
-            return place_title
+            user = await uow.user.get_all()
+            print(user)
+            return user
 
     async def _check_user_exist(self, uow: InterfaceUnitOfWork, **filter_by):
         """Проверяет существование пользователя по соответсвию полей"""
@@ -98,14 +99,8 @@ class UserService:
     async def get_user_by_id(self, uow: InterfaceUnitOfWork, user_id: UUID):
         """Получение пользователя по id"""
         async with uow:
-            result = await uow.user.find_by_filter(id=user_id)
-        return UserInfo(
-            id=result[0].id,
-            full_name=result[0].full_name,
-            login=result[0].login,
-            email=result[0].email,
-            is_active=result[0].is_active,
-        )
+            result = await uow.user.get_user_by_id(user_id=user_id)
+        return result
 
     async def update_user_data(
         self, uow: InterfaceUnitOfWork, user_id: UUID, **update_data
