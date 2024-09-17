@@ -1,5 +1,6 @@
 from src.ActionType.router import action_type_router
 from src.Job.router import job_router
+from src.Notification.router import notification_router
 from src.Organization.router import organization_router
 from src.Place.router import place_router
 from src.User.router import user_router
@@ -14,4 +15,5 @@ router_list = [
     job_router,
     organization_router,
     auth_router,
+    notification_router,
 ]

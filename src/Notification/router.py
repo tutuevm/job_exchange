@@ -1,12 +1,16 @@
 from fastapi import APIRouter, Depends
 
+from src.Notification.services import NotificationService
 from src.auth.auth_router import check_user
 from src.depends import UOWDependence
 
-notification_router = APIRouter(prefix="/notif", tags=["Notif"])
+notification_router = APIRouter(prefix="/notif", tags=["notif"])
 
 
 @notification_router.get("/user_unread_notif")
 async def get_user_unread_notif(
     uow: UOWDependence, current_user: dict = Depends(check_user)
-): ...
+):
+    return await NotificationService().get_user_unread_notifications(
+        uow=uow, current_user=current_user
+    )
