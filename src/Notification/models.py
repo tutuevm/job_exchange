@@ -14,7 +14,7 @@ if TYPE_CHECKING:
 class Notification(Base):
     __tablename__ = "notifications"
 
-    id: Mapped[UUID] = mapped_column(primary_key=True, default=uuid4())
+    id: Mapped[UUID] = mapped_column(primary_key=True, default=uuid4)
     notification_data: Mapped[str] = mapped_column(String(400))
     created_at: Mapped[datetime] = mapped_column(
         server_default=func.now(),
