@@ -1,5 +1,6 @@
-from pydantic import BaseModel, Field, EmailStr
 from uuid import UUID, uuid4
+
+from pydantic import BaseModel, Field, EmailStr
 
 from src.UserData.schemas import UserDataCreatedSchema
 
@@ -9,6 +10,7 @@ class UserSchema(BaseModel):
     login: str = Field(max_length=50)
     email: EmailStr = Field(max_length=50)
     hashed_password: str
+    full_name: str
     user_data: UserDataCreatedSchema
 
 

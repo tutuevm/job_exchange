@@ -7,7 +7,6 @@ from sqlalchemy.orm import selectinload, aliased, joinedload
 
 from src.Job.models import Job
 from src.User.models import User, user_job_association
-from src.User.schemas import UserSchema
 from src.utils.repository import SQLAlchemyRepository
 
 
@@ -96,7 +95,7 @@ class UserRepository(SQLAlchemyRepository):
     async def get_user_created_jobs_with_responded_user(self, owner_id):
         user_job_alias = aliased(user_job_association)
         query = (
-            select(Job, user_job_association.c.user_id, User.login)
+            select(Job, user_job_association.c.user_id, User.full_name)
             .outerjoin(
                 user_job_association,
                 and_(

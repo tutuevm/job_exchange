@@ -18,6 +18,16 @@ from src.Place.models import Place
 from src.Transaction.models import Transaction
 from src.UserAttribute.models import UserAttribute
 
+useless_list = [
+    User,
+    UserData,
+    Job,
+    Notification,
+    Organization,
+    Place,
+    Transaction,
+    UserAttribute,
+]
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.

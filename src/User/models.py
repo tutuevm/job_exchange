@@ -60,6 +60,7 @@ class User(Base):
     email: Mapped[str] = mapped_column(String(50), unique=True, index=True)
     hashed_password: Mapped[bytes] = mapped_column(LargeBinary)
     is_active: Mapped[bool] = mapped_column(default=True)
+    full_name: Mapped[str] = mapped_column(nullable=True)
 
     notifications: Mapped[List["Notification"]] = relationship(back_populates="user")
     attributes: Mapped[List["UserAttribute"]] = relationship(
