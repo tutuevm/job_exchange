@@ -1,6 +1,7 @@
 from typing import List
+from uuid import UUID
 
-from sqlalchemy import select, and_
+from sqlalchemy import select, and_, update
 
 from src.Notification.models import Notification
 from src.utils.repository import SQLAlchemyRepository
@@ -16,3 +17,11 @@ class NotificationsRepository(SQLAlchemyRepository):
         res = await self.session.execute(query)
         result = [row[0] for row in res.all()]
         return result
+
+    async def update_notification(self, notification_id: UUID, update_data: dict):
+        stmt = (
+            update(Notification)
+            .where(Notification.id == notification_id)
+            .values(**update_data)
+        )
+        return await self.session.execute(stmt)
