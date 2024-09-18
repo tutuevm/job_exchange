@@ -1,4 +1,7 @@
-from src.Notification.schemas import NotificationMarkReadSchema
+from src.Notification.schemas import (
+    NotificationMarkReadSchema,
+    NotificationCreateSchema,
+)
 from src.utils.UnitOfWork import InterfaceUnitOfWork
 
 
@@ -23,3 +26,10 @@ class NotificationService:
                     notification_id=notif, update_data={"is_read": True}
                 )
         return {"status": "OK"}
+
+    async def create_notification(
+        self, uow: InterfaceUnitOfWork, notification: NotificationCreateSchema
+    ):
+        notif_data = notification.model_dump()
+        async with uow:
+            await uow.notification.add_one(notif_data)

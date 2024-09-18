@@ -1,6 +1,9 @@
 from fastapi import APIRouter, Depends
 
-from src.Notification.schemas import NotificationMarkReadSchema
+from src.Notification.schemas import (
+    NotificationMarkReadSchema,
+    NotificationCreateSchema,
+)
 from src.Notification.services import NotificationService
 from src.auth.auth_router import check_user
 from src.depends import UOWDependence
@@ -18,9 +21,13 @@ async def get_user_unread_notif(
 
 
 @notification_router.patch("/mark_as_read")
-async def mark_notif_as_read(
-    uow: UOWDependence, notif_list: NotificationMarkReadSchema
-):
+async def mark_as_read(uow: UOWDependence, notif_list: NotificationMarkReadSchema):
     return await NotificationService().mark_notifications_as_read(
         uow=uow, notif_list=notif_list
     )
+
+
+@notification_router.post("/create", status_code=201)
+async def create_new(uow: UOWDependence, notification: NotificationCreateSchema):
+    await NotificationService().create_notification(uow=uow, notification=notification)
+    return
