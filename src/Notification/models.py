@@ -18,7 +18,7 @@ class Notification(Base):
     notification_data: Mapped[str] = mapped_column(String(400))
     created_at: Mapped[datetime] = mapped_column(
         server_default=func.now(),
-        default=datetime.now(),
+        default=datetime.now,
     )
     is_read: Mapped[bool] = mapped_column(default=False, nullable=False)
     user_id: Mapped[UUID] = mapped_column(ForeignKey("users.id"))
