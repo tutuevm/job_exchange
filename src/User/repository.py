@@ -2,11 +2,12 @@ from typing import List
 from uuid import UUID
 
 from fastapi import HTTPException, status
-from sqlalchemy import select, or_, Row, and_, update, insert
+from sqlalchemy import select, or_, Row, and_, update, insert, func
 from sqlalchemy.orm import selectinload, aliased, joinedload
 
 from src.Job.models import Job
 from src.User.models import User, user_job_association
+from src.UserRating.models import UserRating
 from src.utils.repository import SQLAlchemyRepository
 
 
@@ -15,11 +16,17 @@ class UserRepository(SQLAlchemyRepository):
 
     async def get_user_by_id(self, user_id):
         query = (
-            select(User).where(User.id == user_id).options(selectinload(User.user_data))
+            select(User, func.avg(UserRating.rating_value).label("user_rating"))
+            .outerjoin(UserRating, User.id == UserRating.user_id)
+            .where(User.id == user_id)
+            .group_by(User.id)
+            .options(selectinload(User.user_data))
         )
-        result = await self.session.scalar(query)
-        print(result)
-        return result
+        result = (await self.session.execute(query)).all()[0]
+        result[0].user_rating = result[1]
+        return result[0]
+
+        # return result
 
     async def append_many_to_many_elem(
         self, user_id, elem_model, elem_id, row_name
