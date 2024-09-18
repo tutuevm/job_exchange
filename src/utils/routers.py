@@ -5,6 +5,7 @@ from src.Organization.router import organization_router
 from src.Place.router import place_router
 from src.User.router import user_router
 from src.UserAttribute.router import user_attribute_router
+from src.UserRating.router import user_rating
 from src.auth.auth_router import auth_router
 
 router_list = [
@@ -16,4 +17,5 @@ router_list = [
     organization_router,
     auth_router,
     notification_router,
+    user_rating,
 ]

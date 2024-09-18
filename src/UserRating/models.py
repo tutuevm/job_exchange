@@ -8,6 +8,7 @@ from src.database import Base
 
 
 class UserRating(Base):
+    __tablename__ = "user_rating"
     id: Mapped[UUID] = mapped_column(primary_key=True, default=uuid4)
     user_id: Mapped[UUID] = mapped_column(ForeignKey("users.id"))
     rated_by: Mapped[UUID] = mapped_column(ForeignKey("users.id"))

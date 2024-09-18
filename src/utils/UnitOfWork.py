@@ -9,6 +9,7 @@ from src.Transaction.repository import TransactionRepository
 from src.User.repository import UserRepository, UserJobAssociationRepository
 from src.UserAttribute.repository import UserAttributeRepository
 from src.UserData.repository import UserDataRepository
+from src.UserRating.repository import UserRatingRepository
 from src.database import async_session_maker
 
 
@@ -23,6 +24,7 @@ class InterfaceUnitOfWork:
     transaction: Type[TransactionRepository]
     user_data: Type[UserDataRepository]
     notification: Type[NotificationsRepository]
+    user_rating: Type[UserRatingRepository]
 
     async def __aenter__(self): ...
 
@@ -50,6 +52,7 @@ class UnitOfWork:
         self.transaction = TransactionRepository(self.session)
         self.user_data = UserDataRepository(self.session)
         self.notification = NotificationsRepository(self.session)
+        self.user_rating = UserRatingRepository(self.session)
 
     async def __aexit__(self, exc_type, exc_val, exc_tb):
         if exc_type:
