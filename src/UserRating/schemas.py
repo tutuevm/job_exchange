@@ -10,5 +10,5 @@ class UserRatingCreateSchema(BaseModel):
 
 
 class UserDataUpdateSchema(BaseModel):
-    id: UUID
+    user_id: UUID
     update_data: dict
