@@ -4,9 +4,8 @@ from fastapi import HTTPException, status
 
 from src.Job.models import Job
 from src.Transaction.schemas import TransactionType
-from src.User.schemas import UserSchema, UserInfo
+from src.User.schemas import UserSchema
 from src.UserAttribute.models import UserAttribute
-from src.UserData.schemas import UserDataCreatedSchema
 from src.auth.UserManager import UserManager
 from src.utils.UnitOfWork import InterfaceUnitOfWork
 
@@ -103,12 +102,13 @@ class UserService:
         return result
 
     async def update_user_data(
-        self, uow: InterfaceUnitOfWork, user_id: UUID, **update_data
+        self, uow: InterfaceUnitOfWork, user_id: UUID, update_data: dict
     ):
         """Обновление данных пользователя"""
         async with uow:
-            elem = await uow.user.find_by_filter(id=user_id)
-            result = await uow.user.update_value(elem=elem[0], **update_data)
+            result = await uow.user_data.update_data(
+                user_id=user_id, update_data=update_data
+            )
         return result
 
     async def response_for_job(
