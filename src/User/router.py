@@ -5,7 +5,7 @@ from starlette.responses import JSONResponse
 
 from src.User.schemas import UserSchema
 from src.User.services import UserService
-from src.UserRating.schemas import UserDataUpdateSchema
+from src.UserData.schemas import UserDataUpdateSchema
 from src.auth.auth_router import check_user
 from src.depends import UOWDependence
 
@@ -51,7 +51,7 @@ async def get_created_jobs(
 @user_router.put("/update_data")
 async def update_user_data(uow: UOWDependence, update_data: UserDataUpdateSchema):
     result = await UserService().update_user_data(
-        uow=uow, user_id=update_data.id, update_data=update_data.update_data
+        uow=uow, user_id=update_data.user_id, update_data=update_data.update_data
     )
     return result
 

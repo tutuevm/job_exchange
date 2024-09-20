@@ -1,7 +1,8 @@
+from datetime import date
 from typing import Optional
+from uuid import UUID
 
 from pydantic import BaseModel, Field
-from datetime import date
 
 
 class UserDataCreatedSchema(BaseModel):
@@ -23,3 +24,8 @@ class UserDataCreatedSchema(BaseModel):
     education: Optional[str] = None
     driver_license: Optional[str] = None
     languages: Optional[str] = None
+
+
+class UserDataUpdateSchema(BaseModel):
+    user_id: UUID
+    update_data: dict
