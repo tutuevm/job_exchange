@@ -18,6 +18,7 @@ from src.Place.models import Place
 from src.Transaction.models import Transaction
 from src.UserAttribute.models import UserAttribute
 from src.UserRating.models import UserRating
+from src.ManagerData.models import ManagerData
 
 useless_list = [
     User,
@@ -29,6 +30,7 @@ useless_list = [
     Transaction,
     UserAttribute,
     UserRating,
+    ManagerData,
 ]
 
 # this is the Alembic Config object, which provides

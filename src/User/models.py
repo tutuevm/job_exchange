@@ -14,6 +14,7 @@ from sqlalchemy.orm import mapped_column, Mapped, relationship
 
 from src.Job.models import Job
 from src.Job.schemas import JobResponseType
+from src.ManagerData.models import ManagerData
 from src.Notification.models import Notification
 from src.Transaction.models import Transaction
 from src.UserData.models import UserData
@@ -75,3 +76,4 @@ class User(Base):
     )
     transactions_list: Mapped[List["Transaction"]] = relationship()
     user_data: Mapped["UserData"] = relationship(back_populates="user")
+    manager_data: Mapped["ManagerData"] = relationship(back_populates="user")
