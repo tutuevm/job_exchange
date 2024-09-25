@@ -2,6 +2,7 @@ from uuid import UUID, uuid4
 
 from pydantic import BaseModel, Field, EmailStr
 
+from src.ManagerData.schemas import ManagerDataCreateSchema
 from src.UserData.schemas import UserDataCreatedSchema
 
 
@@ -11,7 +12,8 @@ class UserSchema(BaseModel):
     email: EmailStr = Field(max_length=50)
     hashed_password: str
     full_name: str
-    user_data: UserDataCreatedSchema
+    user_data: UserDataCreatedSchema = None
+    manager_data: ManagerDataCreateSchema = None
 
 
 class ResponseUserSchema(BaseModel):

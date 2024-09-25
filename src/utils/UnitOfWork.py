@@ -2,6 +2,7 @@ from typing import Type
 
 from src.ActionType.repository import ActionTypeRepository
 from src.Job.repository import JobRepository
+from src.ManagerData.repository import ManagerDataRepository
 from src.Notification.repository import NotificationsRepository
 from src.Organization.repository import OrganizationRepository
 from src.Place.repository import PlaceRepository
@@ -23,6 +24,7 @@ class InterfaceUnitOfWork:
     user_job_association: Type[UserJobAssociationRepository]
     transaction: Type[TransactionRepository]
     user_data: Type[UserDataRepository]
+    manager_data: Type[ManagerDataRepository]
     notification: Type[NotificationsRepository]
     user_rating: Type[UserRatingRepository]
 
@@ -51,6 +53,7 @@ class UnitOfWork:
         self.user_job_association = UserJobAssociationRepository(self.session)
         self.transaction = TransactionRepository(self.session)
         self.user_data = UserDataRepository(self.session)
+        self.manager_data = ManagerDataRepository(self.session)
         self.notification = NotificationsRepository(self.session)
         self.user_rating = UserRatingRepository(self.session)
 

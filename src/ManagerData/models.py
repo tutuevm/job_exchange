@@ -20,6 +20,6 @@ class ManagerData(Base):
     job_title: Mapped[str] = mapped_column(String(50), nullable=False)
     work_phone: Mapped[str] = mapped_column(String(15), nullable=False)
     organization: Mapped["UUID"] = mapped_column(ForeignKey("organizations.id"))
-    user_id: Mapped[UUID] = mapped_column(ForeignKey("users.id"))
+    user_id: Mapped[UUID] = mapped_column(ForeignKey("users.id"), index=True)
 
     user: Mapped["User"] = relationship(back_populates="manager_data")

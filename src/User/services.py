@@ -25,29 +25,37 @@ class UserService:
             result = await uow.user.find_by_filter(**filter_by)
         return len(result) > 0
 
+    async def _validate_user(self, uow: InterfaceUnitOfWork, user: dict):
+        if await self._check_user_exist(uow=uow, email=user["email"]):
+            raise HTTPException(
+                status_code=400,
+                detail={"warning": "email address is already taken"},
+            )
+        if await self._check_user_exist(uow=uow, login=user["login"]):
+            raise HTTPException(
+                status_code=400, detail={"warning": "username is already taken"}
+            )
+
     async def register_user(self, uow: InterfaceUnitOfWork, user: UserSchema):
         """Регистрация нового пользователя"""
         user = user.model_dump()
-        user_data = user["user_data"]
-        del user["user_data"]
-        print(user)
-        print(user_data)
+        user_data = user.pop("user_data")
+        manager_data = user.pop("manager_data")
         async with uow:
-            if await self._check_user_exist(uow=uow, email=user["email"]):
-                raise HTTPException(
-                    status_code=401,
-                    detail={"warning": "email address is already taken"},
-                )
-            if await self._check_user_exist(uow=uow, login=user["login"]):
-                raise HTTPException(
-                    status_code=401, detail={"warning": "username is already taken"}
-                )
+            await self._validate_user(uow=uow, user=user)
             user["hashed_password"] = UserManager().hash_password(
                 user["hashed_password"]
             )
-            created_user_id = await uow.user.create_user(user)
-            user_data["user_id"] = created_user_id
-            await uow.user_data.add_one(user_data)
+            if user_data:
+                user_data["user_id"] = await uow.user.create_user(user)
+                await uow.user_data.add_one(user_data)
+            elif manager_data:
+                manager_data["user_id"] = await uow.user.create_user(user)
+                await uow.manager_data.add_one(manager_data)
+            else:
+                raise HTTPException(
+                    status_code=400, detail="Invalid user type provided."
+                )
         return {"status": "OK"}
 
     async def append_user_attribute(
