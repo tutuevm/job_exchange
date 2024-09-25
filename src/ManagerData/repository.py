@@ -1,5 +1,7 @@
 from uuid import UUID
 
+from sqlalchemy import update
+
 from src.ManagerData.models import ManagerData
 from src.utils.repository import SQLAlchemyRepository
 
