@@ -6,6 +6,13 @@ from src.utils.UnitOfWork import InterfaceUnitOfWork
 
 class UserAttributeService:
 
+    async def return_id_by_key_value(
+        self, uow: InterfaceUnitOfWork, key: str, value: str
+    ) -> UUID:
+        async with uow:
+            attr = await uow.user_attr.find_by_filter(key=key, value=value)
+            return attr[0].id
+
     async def add_attr(
         self, uow: InterfaceUnitOfWork, attribute: AttributeSchema
     ) -> dict:

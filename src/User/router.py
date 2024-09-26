@@ -3,7 +3,7 @@ from uuid import UUID
 from fastapi import APIRouter, HTTPException, Depends
 from starlette.responses import JSONResponse
 
-from src.User.schemas import UserSchema
+from src.User.schemas import UserSchema, UserAcceptAttrSchema
 from src.User.services import UserService
 from src.UserData.schemas import UserDataUpdateSchema
 from src.auth.auth_router import check_user
@@ -66,9 +66,9 @@ async def reg_user(uow: UOWDependence, user: UserSchema):
 
 
 @user_router.post("/append_attr")
-async def append_user_attr(uow: UOWDependence, user_id: UUID, attr_id: UUID):
+async def append_user_attr(uow: UOWDependence, data: UserAcceptAttrSchema):
     user = await UserService().append_user_attribute(
-        uow=uow, user_id=user_id, attr_id=attr_id
+        uow=uow, user_id=data.user_id, key=data.key, value=data.value
     )
     return user
 

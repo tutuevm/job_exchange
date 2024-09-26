@@ -6,6 +6,7 @@ from src.Job.models import Job
 from src.Transaction.schemas import TransactionType
 from src.User.schemas import UserSchema
 from src.UserAttribute.models import UserAttribute
+from src.UserAttribute.services import UserAttributeService
 from src.auth.UserManager import UserManager
 from src.utils.UnitOfWork import InterfaceUnitOfWork
 
@@ -15,9 +16,7 @@ class UserService:
     async def get_all_users(self, uow: InterfaceUnitOfWork):
         """delete after testing"""
         async with uow:
-            user = await uow.user.get_all()
-            print(user)
-            return user
+            return await uow.user.get_all()
 
     async def _check_user_exist(self, uow: InterfaceUnitOfWork, **filter_by):
         """Проверяет существование пользователя по соответсвию полей"""
@@ -26,6 +25,7 @@ class UserService:
         return len(result) > 0
 
     async def _validate_user(self, uow: InterfaceUnitOfWork, user: dict):
+        """Проверяет зарегистрирован ли пользователь с аналогичным username/email"""
         if await self._check_user_exist(uow=uow, email=user["email"]):
             raise HTTPException(
                 status_code=400,
@@ -46,12 +46,26 @@ class UserService:
             user["hashed_password"] = UserManager().hash_password(
                 user["hashed_password"]
             )
+            user_id = await uow.user.create_user(user)
+            await uow.commit()
             if user_data:
-                user_data["user_id"] = await uow.user.create_user(user)
+                user_data["user_id"] = user_id
                 await uow.user_data.add_one(user_data)
+                await self.append_user_attribute(
+                    uow=uow,
+                    user_id=user_data["user_id"],
+                    key="role",
+                    value="user",
+                )
             elif manager_data:
-                manager_data["user_id"] = await uow.user.create_user(user)
+                manager_data["user_id"] = user_id
                 await uow.manager_data.add_one(manager_data)
+                await self.append_user_attribute(
+                    uow=uow,
+                    user_id=manager_data["user_id"],
+                    key="role",
+                    value="manager",
+                )
             else:
                 raise HTTPException(
                     status_code=400, detail="Invalid user type provided."
@@ -59,15 +73,15 @@ class UserService:
         return {"status": "OK"}
 
     async def append_user_attribute(
-        self, uow: InterfaceUnitOfWork, user_id: UUID, attr_id: UUID
+        self, uow: InterfaceUnitOfWork, user_id: UUID, key: str, value: str
     ) -> dict:
         """Добавление аттрибута пользователя"""
         async with uow:
-            result = await uow.user.append_many_to_many_elem(
-                user_id=user_id,
-                elem_model=UserAttribute,
-                elem_id=attr_id,
-                row_name="attributes",
+            attr_id = await UserAttributeService().return_id_by_key_value(
+                uow=uow, key=key, value=value
+            )
+            result = await uow.user_attr_association.add_one(
+                {"user_id": user_id, "attribute_id": attr_id}
             )
         return result
 
