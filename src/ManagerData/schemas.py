@@ -10,7 +10,6 @@ class ManagerDataCreateSchema(BaseModel):
     job_title: str = Field(max_length=50)
     work_phone: str = Field(max_length=15)
     organization: UUID
-    user_id: UUID
 
 
 class UserDataUpdateSchema(BaseModel):
