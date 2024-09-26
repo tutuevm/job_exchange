@@ -6,7 +6,7 @@ from sqlalchemy import select, or_, Row, and_, update, insert, func
 from sqlalchemy.orm import selectinload, aliased, joinedload
 
 from src.Job.models import Job
-from src.User.models import User, user_job_association
+from src.User.models import User, user_job_association, user_attribute_association
 from src.UserRating.models import UserRating
 from src.utils.repository import SQLAlchemyRepository
 
@@ -141,3 +141,7 @@ class UserJobAssociationRepository(SQLAlchemyRepository):
         )
         result = await self.session.execute(stmt)
         return result
+
+
+class UserAttrAssociationRepository(SQLAlchemyRepository):
+    model = user_attribute_association
