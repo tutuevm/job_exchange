@@ -21,6 +21,7 @@ class UserRepository(SQLAlchemyRepository):
             .where(User.id == user_id)
             .group_by(User.id)
             .options(selectinload(User.user_data))
+            .options(selectinload(User.manager_data))
         )
         result = (await self.session.execute(query)).all()[0]
         result[0].user_rating = result[1]

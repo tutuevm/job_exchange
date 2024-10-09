@@ -51,6 +51,15 @@ class UserService:
             if user_data:
                 user_data["user_id"] = user_id
                 await uow.user_data.add_one(user_data)
+            elif manager_data:
+                manager_data["user_id"] = user_id
+                await uow.manager_data.add_one(manager_data)
+            else:
+                raise HTTPException(
+                    status_code=400, detail="Invalid user type provided."
+                )
+        async with uow:
+            if user_data:
                 await self.append_user_attribute(
                     uow=uow,
                     user_id=user_data["user_id"],
@@ -58,17 +67,11 @@ class UserService:
                     value="user",
                 )
             elif manager_data:
-                manager_data["user_id"] = user_id
-                await uow.manager_data.add_one(manager_data)
                 await self.append_user_attribute(
                     uow=uow,
                     user_id=manager_data["user_id"],
                     key="role",
                     value="manager",
-                )
-            else:
-                raise HTTPException(
-                    status_code=400, detail="Invalid user type provided."
                 )
         return {"status": "OK"}
 
