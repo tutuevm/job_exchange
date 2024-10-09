@@ -14,6 +14,12 @@ from src.utils.repository import SQLAlchemyRepository
 class UserRepository(SQLAlchemyRepository):
     model = User
 
+    async def get_all_user(self) -> List:
+        query = select(self.model).options(selectinload(User.user_data))
+        result = await self.session.execute(query)
+        result = [row[0] for row in result.all() if row[0].user_data != None]
+        return result
+
     async def get_user_by_id(self, user_id):
         query = (
             select(User, func.avg(UserRating.rating_value).label("user_rating"))

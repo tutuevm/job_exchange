@@ -16,7 +16,7 @@ class UserService:
     async def get_all_users(self, uow: InterfaceUnitOfWork):
         """delete after testing"""
         async with uow:
-            return await uow.user.get_all()
+            return await uow.user.get_all_user()
 
     async def _check_user_exist(self, uow: InterfaceUnitOfWork, **filter_by):
         """Проверяет существование пользователя по соответсвию полей"""
