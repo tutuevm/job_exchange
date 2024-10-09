@@ -29,3 +29,9 @@ class UserInfo(BaseModel):
     login: str
     email: str
     is_active: bool
+
+
+class UserAcceptAttrSchema(BaseModel):
+    user_id: UUID
+    key: str
+    value: str

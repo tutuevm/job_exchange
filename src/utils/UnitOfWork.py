@@ -7,7 +7,11 @@ from src.Notification.repository import NotificationsRepository
 from src.Organization.repository import OrganizationRepository
 from src.Place.repository import PlaceRepository
 from src.Transaction.repository import TransactionRepository
-from src.User.repository import UserRepository, UserJobAssociationRepository
+from src.User.repository import (
+    UserRepository,
+    UserJobAssociationRepository,
+    UserAttrAssociationRepository,
+)
 from src.UserAttribute.repository import UserAttributeRepository
 from src.UserData.repository import UserDataRepository
 from src.UserRating.repository import UserRatingRepository
@@ -22,6 +26,7 @@ class InterfaceUnitOfWork:
     job: Type[JobRepository]
     org: Type[OrganizationRepository]
     user_job_association: Type[UserJobAssociationRepository]
+    user_attr_association = Type[UserAttrAssociationRepository]
     transaction: Type[TransactionRepository]
     user_data: Type[UserDataRepository]
     manager_data: Type[ManagerDataRepository]
@@ -29,11 +34,10 @@ class InterfaceUnitOfWork:
     user_rating: Type[UserRatingRepository]
 
     async def __aenter__(self): ...
-
     async def __aexit__(self, *args): ...
-
     async def commit(self): ...
     async def rollback(self): ...
+    async def flush(self): ...
 
 
 class UnitOfWork:
@@ -56,6 +60,7 @@ class UnitOfWork:
         self.manager_data = ManagerDataRepository(self.session)
         self.notification = NotificationsRepository(self.session)
         self.user_rating = UserRatingRepository(self.session)
+        self.user_attr_association = UserAttrAssociationRepository(self.session)
 
     async def __aexit__(self, exc_type, exc_val, exc_tb):
         if exc_type:
@@ -69,3 +74,6 @@ class UnitOfWork:
 
     async def rollback(self):
         await self.session.rollback()
+
+    async def flush(self):
+        await self.session.flush()
