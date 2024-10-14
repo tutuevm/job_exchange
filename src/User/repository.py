@@ -20,6 +20,7 @@ class UserRepository(SQLAlchemyRepository):
             .outerjoin(UserRating, User.id == UserRating.user_id)
             .group_by(User.id)
             .options(selectinload(User.user_data))
+            .where(User.manager_data == None)
         )
         result = await self.session.execute(query)
         res = []
