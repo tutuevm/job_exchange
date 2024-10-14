@@ -15,10 +15,18 @@ class UserRepository(SQLAlchemyRepository):
     model = User
 
     async def get_all_user(self) -> List:
-        query = select(self.model).options(selectinload(User.user_data))
+        query = (
+            select(self.model, func.avg(UserRating.rating_value).label("user_rating"))
+            .outerjoin(UserRating, User.id == UserRating.user_id)
+            .group_by(User.id)
+            .options(selectinload(User.user_data))
+        )
         result = await self.session.execute(query)
-        result = [row[0] for row in result.all() if row[0].user_data != None]
-        return result
+        res = []
+        for row in result.all():
+            row[0].user_rating = row[1]
+            res.append(row[0])
+        return res
 
     async def get_user_by_id(self, user_id):
         query = (
@@ -29,9 +37,12 @@ class UserRepository(SQLAlchemyRepository):
             .options(selectinload(User.user_data))
             .options(selectinload(User.manager_data))
         )
-        result = (await self.session.execute(query)).all()[0]
-        result[0].user_rating = result[1]
-        return result[0]
+        result = (await self.session.execute(query)).all()
+        if result:
+            result = result[0]
+            result[0].user_rating = result[1]
+            return result[0]
+        return result
 
         # return result
 

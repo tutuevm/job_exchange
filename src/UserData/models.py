@@ -15,7 +15,9 @@ class UserData(Base):
     __tablename__ = "user_data"
 
     id: Mapped[UUID] = mapped_column(primary_key=True, default=uuid4)
-    user_id: Mapped[UUID] = mapped_column(ForeignKey("users.id"), index=True)
+    user_id: Mapped[UUID] = mapped_column(
+        ForeignKey("users.id", ondelete="Cascade"), index=True
+    )
     name: Mapped[str] = mapped_column(String(50), nullable=False)
     surname: Mapped[str] = mapped_column(String(50), nullable=False)
     patronymic: Mapped[str] = mapped_column(String(50), nullable=False)

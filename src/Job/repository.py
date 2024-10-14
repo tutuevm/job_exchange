@@ -6,7 +6,7 @@ from sqlalchemy.orm import selectinload, joinedload
 from starlette import status
 
 from src.Job.models import Job
-from src.Job.schemas import JobFilter
+from src.Job.schemas import JobFilter, JobStatusSchema
 from src.utils.repository import SQLAlchemyRepository
 
 
@@ -47,6 +47,7 @@ class JobRepository(SQLAlchemyRepository):
 
         query = (
             query.offset(filter["skip"])
+            .where(self.model.status_value != JobStatusSchema.CLOSED)
             .limit(filter["limit"])
             .options(joinedload(Job.action_type))
             .options(joinedload(Job.city))
