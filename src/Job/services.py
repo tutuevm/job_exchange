@@ -3,7 +3,13 @@ from uuid import UUID
 
 from fastapi import HTTPException, status
 
-from src.Job.schemas import JobSchema, JobFilter, JobStatusSchema, JobResponseType
+from src.Job.schemas import (
+    JobSchema,
+    JobFilter,
+    JobStatusSchema,
+    JobResponseType,
+    AcceptDataSchema,
+)
 from src.Transaction.schemas import TransactionType, TransactionStatus
 from src.utils.UnitOfWork import InterfaceUnitOfWork
 
@@ -55,7 +61,12 @@ class JobService:
         return result
 
     async def accept_and_close_job(
-        self, uow: InterfaceUnitOfWork, user_id: UUID, job_id: UUID, current_user
+        self,
+        uow: InterfaceUnitOfWork,
+        user_id: UUID,
+        job_id: UUID,
+        current_user,
+        accept_data: AcceptDataSchema,
     ):
         async with uow:
             job_response = await uow.user_job_association.get_association(
@@ -73,10 +84,11 @@ class JobService:
                     detail=f"Invalid response status. Expected - {JobResponseType.ACCEPTED}, arrived - {job_response.response_status.value}",
                 )
             await uow.job.update_value(job[0], status_value=JobStatusSchema.CLOSED)
+            amount = (job[0].price * accept_data.hours) * (accept_data.kpi / 100)
             await uow.transaction.add_one(
                 {
                     "user_id": user_id,
-                    "amount": job[0].price,
+                    "amount": amount,
                     "type": TransactionType.DEPOSIT,
                     "status": TransactionStatus.COMPLETED,
                 }

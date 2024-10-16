@@ -3,7 +3,12 @@ from uuid import UUID
 
 from fastapi import APIRouter, Depends
 
-from src.Job.schemas import JobSchema, return_filter, JobResponseSchema
+from src.Job.schemas import (
+    JobSchema,
+    return_filter,
+    JobResponseSchema,
+    AcceptDataSchema,
+)
 from src.Job.services import JobService
 from src.auth.auth_router import check_user
 from src.depends import UOWDependence
@@ -48,9 +53,17 @@ async def accept_responded_user(
 
 @job_router.put("/accept_and_close_job")
 async def accept_and_close_job(
-    uow: UOWDependence, user_id: UUID, job_id: UUID, current_user=Depends(check_user)
+    uow: UOWDependence,
+    accept_data: AcceptDataSchema,
+    user_id: UUID,
+    job_id: UUID,
+    current_user=Depends(check_user),
 ):
     result = await JobService().accept_and_close_job(
-        uow=uow, user_id=user_id, job_id=job_id, current_user=current_user
+        uow=uow,
+        user_id=user_id,
+        job_id=job_id,
+        current_user=current_user,
+        accept_data=accept_data,
     )
     return result

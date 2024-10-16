@@ -107,3 +107,8 @@ class JobResponseType(Enum):
     REJECTED = "Отклонен"
     WITHDRAWN = "Отозван"
     CLOSED = "Закрыта"
+
+
+class AcceptDataSchema(BaseModel):
+    hours: int
+    kpi: int

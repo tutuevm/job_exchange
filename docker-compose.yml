@@ -1,5 +1,3 @@
-version: '3.8'
-
 networks:
   dev:
 
@@ -14,8 +12,6 @@ services:
       POSTGRES_PASSWORD: ${DATABASE_PASSWORD}
     ports:
       - "5432:5432"
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
     networks:
       - dev
     env_file:
@@ -50,7 +46,3 @@ services:
       - frontend
     networks:
       - dev
-
-
-volumes:
-  postgres_data:
