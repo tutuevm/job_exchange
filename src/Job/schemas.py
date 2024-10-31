@@ -70,6 +70,10 @@ class JobResponseSchema(BaseModel):
     status_value: str
 
 
+class JobsResponseSchema(BaseModel):
+    job: List[JobResponseSchema]
+
+
 class JobFilter(BaseModel):
     owner_id: UUID | None = Field(Query(None))
     location_id: List[UUID] | None = Field(Query(None))

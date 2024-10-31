@@ -1,4 +1,4 @@
-from typing import Annotated, List
+from typing import Annotated
 from uuid import UUID
 
 from fastapi import APIRouter, Depends
@@ -6,7 +6,6 @@ from fastapi import APIRouter, Depends
 from src.Job.schemas import (
     JobSchema,
     return_filter,
-    JobResponseSchema,
     AcceptDataSchema,
 )
 from src.Job.services import JobService
@@ -22,7 +21,7 @@ async def create_job_elem(uow: UOWDependence, job: JobSchema) -> dict:
     return status
 
 
-@job_router.get("/get_jobs", response_model=List[JobResponseSchema])
+@job_router.get("/get_jobs")
 async def get_jobs(uow: UOWDependence, q: Annotated[dict, Depends(return_filter)]):
     result = await JobService().get_jobs(uow=uow, filter=q)
 

@@ -1,4 +1,3 @@
-from typing import List
 from uuid import UUID
 
 from fastapi import HTTPException, status
@@ -22,10 +21,11 @@ class JobService:
             status = await uow.job.add_one(job_data)
         return status
 
-    async def get_jobs(self, uow: InterfaceUnitOfWork, filter: JobFilter) -> List:
+    async def get_jobs(self, uow: InterfaceUnitOfWork, filter: JobFilter) -> list:
         async with uow:
             jobs = await uow.job.get_jobs_by_filter(filter=filter)
-        return jobs
+        result = [{"job": elem} for elem in jobs]
+        return result
 
     async def delete_job_by_id(self, uow: InterfaceUnitOfWork, id: UUID):
         async with uow:
